@@ -9,13 +9,14 @@
         .comp-name { font-size: 20px; font-bold: true; color: #1e3a8a; margin-bottom: 4px; }
         .report-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
         .meta { font-size: 11px; color: #666; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
-        th, td { border: 1px solid #999; padding: 4px 2px; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #999; padding: 2px 1px; text-align: center; }
         th { background-color: #f3f4f6; font-size: 9px; font-weight: bold; }
         td { font-size: 9px; }
-        .name-col { text-align: left; padding-left: 5px; width: 100px; overflow: hidden; white-space: nowrap; }
-        .trade-col { width: 50px; overflow: hidden; white-space: nowrap; }
-        .total-col { font-weight: bold; background-color: #e0f2fe; width: 40px; }
+        .sn-col { width: 15px; font-weight: bold; background-color: #f9f9f9; }
+        .name-col { text-align: left; padding-left: 3px; min-width: 70px; }
+        .trade-col { white-space: nowrap; text-align: left; padding-left: 3px; }
+        .total-col { font-weight: bold; background-color: #e0f2fe; width: 30px; }
         .absent { color: #dc2626; font-weight: bold; }
         .present { color: #166534; }
         .empty { color: #ccc; }
@@ -41,6 +42,7 @@
     <table>
         <thead>
             <tr>
+                <th class="sn-col">SN</th>
                 <th class="name-col">Worker Name</th>
                 <th class="trade-col">Trade</th>
                 @for($d=1; $d<=$daysInMonth; $d++)
@@ -50,8 +52,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($reportData as $row)
+            @foreach($reportData as $index => $row)
                 <tr>
+                    <td class="sn-col">{{ $index + 1 }}</td>
                     <td class="name-col">{{ $row['worker']->name }}</td>
                     <td class="trade-col">{{ $row['worker']->trade }}</td>
                     @foreach($row['days'] as $day => $val)
@@ -62,9 +65,14 @@
                     <td class="total-col">{{ $row['totalHours'] }}</td>
                 </tr>
             @endforeach
-            @if(count($reportData) === 0)
+            @if(count($reportData) > 0)
                 <tr>
-                    <td colspan="{{ $daysInMonth + 3 }}" style="padding: 20px; text-align: center; color: #666;">
+                    <td colspan="{{ $daysInMonth + 3 }}" style="text-align: right; font-weight: bold; padding-right: 6px; background-color: #f0f9ff;">TOTAL</td>
+                    <td class="total-col" style="font-size: 9px; font-weight: bold; background-color: #bfdbfe;">{{ collect($reportData)->sum('totalHours') }}</td>
+                </tr>
+            @else
+                <tr>
+                    <td colspan="{{ $daysInMonth + 4 }}" style="padding: 20px; text-align: center; color: #666;">
                         No records found
                     </td>
                 </tr>

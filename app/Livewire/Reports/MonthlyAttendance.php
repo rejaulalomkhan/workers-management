@@ -7,7 +7,6 @@ use App\Models\Project;
 use App\Models\Worker;
 use App\Models\Attendance;
 use Carbon\Carbon;
-use Spatie\LaravelPdf\Facades\Pdf;
 
 class MonthlyAttendance extends Component
 {
@@ -87,18 +86,17 @@ class MonthlyAttendance extends Component
         
         $pdfName = 'Monthly_Attendance_' . date('F_Y', mktime(0,0,0,$this->filterMonth, 1, $this->filterYear)) . '.pdf';
 
-        return response()->streamDownload(function () use ($data, $project) {
-            echo base64_decode(Pdf::view('pdfs.monthly-attendance', [
-                'reportData' => $data['reportData'],
-                'daysInMonth' => $data['daysInMonth'],
-                'startDate' => $data['startDate'],
-                'filterMonth' => $this->filterMonth,
-                'filterYear' => $this->filterYear,
-                'project' => $project,
-            ])
-            ->format('a4')
-            ->landscape()
-            ->base64());
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.monthly-attendance', [
+            'reportData' => $data['reportData'],
+            'daysInMonth' => $data['daysInMonth'],
+            'startDate' => $data['startDate'],
+            'filterMonth' => $this->filterMonth,
+            'filterYear' => $this->filterYear,
+            'project' => $project,
+        ])->setPaper('a4', 'landscape');
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->stream();
         }, $pdfName);
     }
 

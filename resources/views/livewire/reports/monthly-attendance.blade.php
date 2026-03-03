@@ -58,7 +58,8 @@
             <table class="w-max min-w-full text-left border-collapse text-sm">
                 <thead>
                     <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
-                        <th class="px-4 py-3 font-semibold sticky left-0 bg-gray-50 border-r border-gray-200 z-10 w-48">Worker Name</th>
+                        <th class="px-2 py-3 font-semibold sticky left-0 bg-gray-50 border-r border-gray-200 z-10 w-10 text-center">SN</th>
+                        <th class="px-4 py-3 font-semibold sticky left-10 bg-gray-50 border-r border-gray-200 z-10 w-48">Worker Name</th>
                         <th class="px-4 py-3 font-semibold border-r border-gray-200 text-center">Trade</th>
                         @for($d=1; $d<=$daysInMonth; $d++)
                             <th class="px-2 py-3 font-semibold border-r border-gray-200 text-center w-8">{{ $d }}</th>
@@ -67,9 +68,10 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @forelse($reportData as $row)
+                    @forelse($reportData as $index => $row)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 py-3 font-medium text-gray-900 sticky left-0 bg-white group-hover:bg-gray-50 border-r border-gray-200 truncate max-w-[12rem]">{{ $row['worker']->name }}</td>
+                            <td class="px-2 py-3 text-xs font-semibold text-gray-600 text-center sticky left-0 bg-white group-hover:bg-gray-50 border-r border-gray-200 z-10">{{ $index + 1 }}</td>
+                            <td class="px-4 py-3 font-medium text-gray-900 sticky left-10 bg-white group-hover:bg-gray-50 border-r border-gray-200 truncate max-w-[12rem] z-10">{{ $row['worker']->name }}</td>
                             <td class="px-4 py-3 text-xs text-gray-500 border-r border-gray-200 text-center">{{ $row['worker']->trade }}</td>
                             @foreach($row['days'] as $day => $val)
                                 <td class="px-1 py-3 text-center border-r border-gray-200 {{ $val === 'A' ? 'text-red-500 font-bold bg-red-50/50' : ($val !== '-' ? 'text-green-700 font-bold' : 'text-gray-300') }}">
@@ -82,7 +84,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $daysInMonth + 3 }}" class="px-6 py-10 text-center text-gray-500">
+                            <td colspan="{{ $daysInMonth + 4 }}" class="px-6 py-10 text-center text-gray-500">
                                 No attendance records found for the selected criteria.
                             </td>
                         </tr>
