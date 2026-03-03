@@ -61,6 +61,17 @@
             <a href="/attendance" class="block px-4 py-2 rounded-lg hover:bg-blue-700 {{ request()->is('attendance*') ? 'bg-blue-700' : '' }}">Attendance</a>
             <a href="/salary" class="block px-4 py-2 rounded-lg hover:bg-blue-700 {{ request()->is('salary*') ? 'bg-blue-700' : '' }}">Salary</a>
             <a href="/invoices" class="block px-4 py-2 rounded-lg hover:bg-blue-700 {{ request()->is('invoices*') ? 'bg-blue-700' : '' }}">Invoices</a>
+            
+            <div x-data="{ open: {{ request()->is('reports*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="w-full text-left px-4 py-2 rounded-lg hover:bg-blue-700 flex justify-between items-center {{ request()->is('reports*') ? 'bg-blue-700' : '' }}">
+                    <span>Reports</span>
+                    <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="open" x-transition class="pl-4 mt-2 space-y-2">
+                    <a href="/reports/monthly-attendance" class="block px-4 py-2 text-sm rounded-lg hover:bg-blue-700 {{ request()->is('reports/monthly-attendance*') ? 'bg-blue-600' : 'text-blue-200' }}">Monthly Attendance</a>
+                </div>
+            </div>
+
             <a href="/settings" class="block px-4 py-2 rounded-lg hover:bg-blue-700 {{ request()->is('settings*') ? 'bg-blue-700' : '' }}">Settings</a>
         </nav>
         <div class="px-4 py-4 border-t border-blue-700 mt-auto">

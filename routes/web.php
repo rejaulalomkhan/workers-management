@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/settings', SettingsManager::class);
+    Route::get('/reports/monthly-attendance', \App\Livewire\Reports\MonthlyAttendance::class)->name('reports.monthly-attendance');
     Route::get('/projects', ProjectManager::class);
     Route::get('/projects/{project}', ProjectView::class)->name('projects.view');
     Route::get('/workers', WorkerManager::class);
