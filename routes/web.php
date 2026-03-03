@@ -10,6 +10,7 @@ use App\Livewire\Workers\WorkerView;
 use App\Livewire\Attendance\AttendanceManager;
 use App\Livewire\Salary\SalaryReport;
 use App\Livewire\Invoices\InvoiceManager;
+use App\Livewire\Reports\ProfitLoss;
 use App\Livewire\Auth\Login;
 
 Route::get('/login', Login::class)->name('login')->middleware('guest');
@@ -28,6 +29,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/settings', SettingsManager::class);
     Route::get('/reports/monthly-attendance', \App\Livewire\Reports\MonthlyAttendance::class)->name('reports.monthly-attendance');
+    Route::get('/reports/profit-loss', ProfitLoss::class)->name('reports.profit-loss');
     Route::get('/projects', ProjectManager::class);
     Route::get('/projects/{project}', ProjectView::class)->name('projects.view');
     Route::get('/workers', WorkerManager::class);

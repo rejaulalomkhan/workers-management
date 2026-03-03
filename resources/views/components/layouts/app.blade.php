@@ -69,6 +69,7 @@
                 </button>
                 <div x-show="open" x-transition class="pl-4 mt-2 space-y-2">
                     <a href="/reports/monthly-attendance" class="block px-4 py-2 text-sm rounded-lg hover:bg-blue-700 {{ request()->is('reports/monthly-attendance*') ? 'bg-blue-600' : 'text-blue-200' }}">Monthly Attendance</a>
+                    <a href="/reports/profit-loss" class="block px-4 py-2 text-sm rounded-lg hover:bg-blue-700 {{ request()->is('reports/profit-loss*') ? 'bg-blue-600' : 'text-blue-200' }}">Profit & Loss</a>
                 </div>
             </div>
 

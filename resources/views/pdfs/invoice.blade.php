@@ -16,9 +16,9 @@
             background: url('{{ public_path($setting->logo_path) }}') no-repeat center center;
             opacity: 0.1;
             position: fixed;
-            top: 10%; left: 0; right: 0; bottom: 0;
+            top: 2%; left: 0; right: 0; bottom: 0;
             z-index: -1;
-            background-size: 50%;
+            background-size: 60%;
         }
         @endif
         .container { padding: 5px 40px 5px 40px; }
@@ -47,41 +47,41 @@
         </div>
     @endif
     <div class="container">
-        <h2 style="text-align: center; font-size: 25px; color: #000000ff; background-color: #cac3c3ff; padding: 2px 0;">TAX INVOICE</h2>
-        <div style="float: right; text-align: right; margin-bottom: 10px; margin-top: -20px; font-size: 18px; font-weight: bold;">
-            Invoice No: {{ $invoice->invoice_number }}<br>
-            Date: {{ $invoice->invoice_date }}
+        <div style="font-family: 'Times New Roman', Times, serif;">
+        <h2 style="text-align: center; font-size: 25px; color: #000000ff; background-color: #dfdfdfff; padding: 2px 0;">TAX INVOICE</h2>
+        <div style="float: right; text-align: right; margin-bottom: 10px; margin-top: -10px; font-size: 18px; font-weight: bold;">
+            INVOICE NO: {{ $invoice->invoice_number }}<br>
+            DATE: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/m/Y') }}
+        </div>
         </div>
 
         <div style="width: 100%; clear: both; gap: 10px;">
-            <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
-                <h4 style="margin-top:0; border-bottom: 1px solid #eee; padding-bottom: 5px;">Billed To:</h4>
-                <div class="font-bold" style="font-size: 16px;">{{ $invoice->project->customer_name }}</div>
-                <div>{{ $invoice->project->customer_address }}</div>
+            <div style="float: left; width: 85%; font-family: 'Times New Roman', Times, serif; font-size: 16px;">
+                Billing To:<br>
+                Date Of Invoice:{{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/m/Y') }}<br>
+                <div class="font-bold" style="font-size: 16px;">{{ strtoupper($invoice->project->customer_name) }}</div>
                 @if($invoice->project->customer_trn)
-                <div style="margin-top: 6px;"><strong>TRN:</strong> {{ $invoice->project->customer_trn }}</div>
+                <div>TRN: {{ $invoice->project->customer_trn }}</div>
                 @endif
                 @if($invoice->project->customer_phone)
-                <div><strong>TEL:</strong> {{ $invoice->project->customer_phone }}</div>
+                <div>TEL: {{ $invoice->project->customer_phone }}</div>
                 @endif
-                <div style="margin-top: 6px;"><strong>Project:</strong> {{ $invoice->project->name }}</div>
+                <div>PROJECT: {{ $invoice->project->name }}</div>
                 @if($invoice->project->customer_subject)
-                <div><strong>Sub:</strong> {{ $invoice->project->customer_subject }}</div>
+                <div>Sub: {{ $invoice->project->customer_subject }}</div>
                 @endif
-            </div>
-                <div style="float: right; width: 45%; border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
-                    <h4 style="margin-top:0; border-bottom: 1px solid #eee; padding-bottom: 5px;">Billed From:</h4>
-                    <div class="font-bold" style="font-size: 16px;">{{ $setting->company_name }}</div>
-                    <div>{{ $setting->company_address }}</div>
-                    @if($setting->company_trn)
-                    <div style="margin-top: 6px;"><strong>TRN:</strong> {{ $setting->company_trn }}</div>
-                    @endif
-                    @if($setting->company_phone)
-                    <div><strong>TEL:</strong> {{ $setting->company_phone }}</div>
-                    @endif
-                </div>
-
+                <div>Address Office: {{ $invoice->project->customer_address }}</div>
+                <br>
+                Billing From:<br>
+                {{ $setting->company_name }}<br>
+                <br>  
+                @if($setting->bank_details)
+                <div style="white-space: pre-line; font-family: 'Roboto', sans-serif !important;">{{ $setting->bank_details }}</div>
+                @endif     
+                TRN: {{ $setting->trn }}
+            </div>     
         </div>
+
         <div style="clear: both;"></div>
 
         @php
@@ -135,29 +135,10 @@
             </tbody>
         </table>
         <div style="clear: both;"></div>
-
         <div style="margin-top: 20px;">
-            <strong style="display:block; margin-bottom:6px;">For</strong>
-            <div style="white-space: pre-line; font-size: 13px;">{{ $setting->company_name }}</div>
-            <div style="white-space: pre-line; font-size: 13px;">Mob:0544083365</div>
-        </div>
-
-        @if($setting->bank_details)
-        <div style="margin-top: 20px;">
-            <strong style="display:block; margin-bottom:6px;">Bank Details:</strong>
-            <div style="white-space: pre-line; font-size: 13px;">{{ $setting->bank_details }}</div>
-        </div>
-        @endif
-
-        <div style="margin-top: 80px; width: 100%;">
-            <div style="float: left; width: 40%; text-align: center;">
-                <hr style="border-color: #333; margin-bottom: 5px;">
-                <strong>Receiver's Signature</strong>
-            </div>
-            <div style="float: right; width: 40%; text-align: center;">
-                <hr style="border-color: #333; margin-bottom: 5px;">
-                <strong>Authorized Signature</strong>
-            </div>
+            For
+            <br>{{ $setting->company_name }}
+            <br>Mob:0544083365
         </div>
     </div>
 
