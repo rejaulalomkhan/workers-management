@@ -10,7 +10,7 @@ class ProjectManager extends Component
 {
     public $projects;
     public $isModalOpen = false;
-    public $project_id, $name, $location, $customer_name, $customer_address, $customer_trn;
+    public $project_id, $name, $location, $customer_name, $customer_address, $customer_trn, $customer_phone, $customer_subject;
     public $categories = [];
     
     public function render()
@@ -44,6 +44,8 @@ class ProjectManager extends Component
         $this->customer_name = '';
         $this->customer_address = '';
         $this->customer_trn = '';
+        $this->customer_phone = '';
+        $this->customer_subject = '';
         $this->categories = [];
     }
 
@@ -61,6 +63,8 @@ class ProjectManager extends Component
             'customer_name' => $this->customer_name,
             'customer_address' => $this->customer_address,
             'customer_trn' => $this->customer_trn,
+            'customer_phone' => $this->customer_phone,
+            'customer_subject' => $this->customer_subject,
         ]);
 
         $project->categories()->delete();
@@ -87,6 +91,8 @@ class ProjectManager extends Component
         $this->customer_name = $project->customer_name;
         $this->customer_address = $project->customer_address;
         $this->customer_trn = $project->customer_trn;
+        $this->customer_phone = $project->customer_phone;
+        $this->customer_subject = $project->customer_subject;
         $this->categories = $project->categories->map(function($c) {
             return ['name'=> $c->name, 'billing_rate'=> $c->billing_rate];
         })->toArray();

@@ -89,9 +89,19 @@
                                         <label class="block text-sm font-medium text-gray-700">Customer Address</label>
                                         <input type="text" wire:model="customer_address" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
                                     </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Customer TRN</label>
+                                            <input type="text" wire:model="customer_trn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Customer Phone (TEL)</label>
+                                            <input type="text" wire:model="customer_phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" placeholder="+971...">
+                                        </div>
+                                    </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Customer TRN</label>
-                                        <input type="text" wire:model="customer_trn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                                        <label class="block text-sm font-medium text-gray-700">Subject / Sub <span class="text-gray-400 text-xs">(e.g. Labor Supply)</span></label>
+                                        <input type="text" wire:model="customer_subject" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" placeholder="Labor Supply">
                                     </div>
                                 </div>
 

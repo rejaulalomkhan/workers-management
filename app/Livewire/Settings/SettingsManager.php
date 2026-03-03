@@ -18,11 +18,14 @@ class SettingsManager extends Component
     public $email;
     public $currency;
     public $vat_rate;
+    public $bank_details;
     
     public $new_logo;
     public $new_header_image;
+    public $new_footer_image;
     public $existing_logo;
     public $existing_header_image;
+    public $existing_footer_image;
 
     public function mount()
     {
@@ -36,9 +39,11 @@ class SettingsManager extends Component
         $this->email = $setting->email;
         $this->currency = $setting->currency ?? 'AED';
         $this->vat_rate = $setting->vat_rate ?? 5.00;
+        $this->bank_details = $setting->bank_details;
         
         $this->existing_logo = $setting->logo_path;
         $this->existing_header_image = $setting->header_image_path;
+        $this->existing_footer_image = $setting->footer_image_path;
     }
 
     public function save()
@@ -74,6 +79,18 @@ class SettingsManager extends Component
             $this->existing_header_image = $setting->header_image_path;
         }
 
+        if ($this->new_footer_image) {
+            if ($setting->footer_image_path) {
+                $oldPath = str_replace('storage/', '', $setting->footer_image_path);
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                }
+            }
+            $path = $this->new_footer_image->store('settings', 'public');
+            $setting->footer_image_path = 'storage/' . $path;
+            $this->existing_footer_image = $setting->footer_image_path;
+        }
+
         $setting->company_name = $this->company_name;
         $setting->company_name_arabic = $this->company_name_arabic;
         $setting->trn = $this->trn;
@@ -82,11 +99,13 @@ class SettingsManager extends Component
         $setting->email = $this->email;
         $setting->currency = $this->currency;
         $setting->vat_rate = $this->vat_rate;
+        $setting->bank_details = $this->bank_details;
         
         $setting->save();
         
         $this->new_logo = null;
         $this->new_header_image = null;
+        $this->new_footer_image = null;
         
         session()->flash('success', 'Settings successfully updated.');
     }
@@ -121,6 +140,22 @@ class SettingsManager extends Component
         }
         $this->new_header_image = null;
         session()->flash('success', 'Header image removed successfully.');
+    }
+
+    public function removeFooterImage()
+    {
+        $setting = Setting::first();
+        if ($setting && $setting->footer_image_path) {
+            $path = str_replace('storage/', '', $setting->footer_image_path);
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+            }
+            $setting->footer_image_path = null;
+            $setting->save();
+            $this->existing_footer_image = null;
+        }
+        $this->new_footer_image = null;
+        session()->flash('success', 'Footer image removed successfully.');
     }
 
     public function render()
