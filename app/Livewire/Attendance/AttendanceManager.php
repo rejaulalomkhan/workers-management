@@ -53,21 +53,19 @@ class AttendanceManager extends Component
         
         $date = Carbon::createFromDate($this->year, $this->month, $day)->format('Y-m-d');
         
-        if (trim($hours) === '') {
-            Attendance::where('worker_id', $worker_id)
-                ->where('project_id', $this->project_id)
-                ->where('date', $date)
-                ->delete();
-        } else {
-            Attendance::updateOrCreate(
-                [
-                    'worker_id' => $worker_id,
-                    'project_id' => $this->project_id,
-                    'date' => $date
-                ],
-                ['hours' => strtoupper(trim($hours))]
-            );
+        $hours = trim($hours);
+        if ($hours === '') {
+            $hours = 'A';
         }
+
+        Attendance::updateOrCreate(
+            [
+                'worker_id' => $worker_id,
+                'project_id' => $this->project_id,
+                'date' => $date
+            ],
+            ['hours' => strtoupper($hours)]
+        );
     }
 
     public function loadData()

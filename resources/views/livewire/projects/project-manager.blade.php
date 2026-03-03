@@ -16,8 +16,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($projects as $project)
             <div class="bg-white rounded-lg shadow border border-gray-100 flex flex-col hover:shadow-md transition">
-                <div class="p-5 flex-1">
-                    <h3 class="text-lg font-bold text-gray-900 mb-1">{{ $project->name }}</h3>
+                <div class="p-5 flex-1 block">
+                    <a href="/projects/{{ $project->id }}" class="text-lg font-bold text-gray-900 mb-1 hover:text-blue-600 transition block relative">{{ $project->name }}<span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></span></a>
                     <p class="text-sm text-gray-500 mb-4">{{ $project->location ?? 'No location' }}</p>
                     
                     <div class="text-sm mb-4 bg-gray-50 p-3 rounded">
@@ -59,11 +59,11 @@
 
     <!-- Modal Form -->
     @if($isModalOpen)
-        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" wire:click="closeModal"></div>
+                <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true" wire:click="closeModal"></div>
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
+                <div class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
                     <form wire:submit="store">
                         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[80vh] overflow-y-auto">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title">

@@ -17,11 +17,11 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         @foreach($workers as $worker)
-            <div class="bg-white rounded-lg shadow border border-gray-100 flex flex-col">
-                <div class="p-4 flex-1">
+            <div class="bg-white rounded-lg shadow border border-gray-100 flex flex-col hover:shadow-md transition">
+                <a href="/workers/{{ $worker->id }}" class="p-4 flex-1 cursor-pointer block">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-900">{{ $worker->name }}</h3>
+                            <h3 class="text-lg font-bold text-gray-900 hover:text-blue-600 transition">{{ $worker->name }}</h3>
                             <p class="text-xs text-gray-500">{{ $worker->worker_id_number ?? 'No ID' }}</p>
                         </div>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -32,7 +32,7 @@
                         <div class="text-sm text-gray-500">Pay Rate</div>
                         <div class="font-bold text-gray-900">{{ number_format($worker->internal_pay_rate, 2) }} /hr</div>
                     </div>
-                </div>
+                </a>
                 <div class="bg-gray-50 px-4 py-3 border-t flex justify-end gap-3 rounded-b-lg">
                     <button wire:click="edit({{ $worker->id }})" class="text-blue-600 hover:text-blue-900 font-medium text-sm">Edit</button>
                     <button wire:click="delete({{ $worker->id }})" class="text-red-600 hover:text-red-900 font-medium text-sm" onclick="confirm('Are you sure?') || event.stopImmediatePropagation()">Delete</button>
@@ -54,11 +54,11 @@
 
     <!-- Modal Form -->
     @if($isModalOpen)
-        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" wire:click="closeModal"></div>
+                <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true" wire:click="closeModal"></div>
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full">
+                <div class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full">
                     <form wire:submit="store">
                         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title">

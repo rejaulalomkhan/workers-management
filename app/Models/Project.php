@@ -19,4 +19,9 @@ class Project extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+    
+    public function workers()
+    {
+        return $this->belongsToMany(Worker::class);
+    }
 }

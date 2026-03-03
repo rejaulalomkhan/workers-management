@@ -19,4 +19,14 @@ class Worker extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(WorkerPayment::class);
+    }
+    
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
+    }
 }
