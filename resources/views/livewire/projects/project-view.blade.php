@@ -58,11 +58,11 @@
         <div class="w-full lg:w-2/3 xl:w-3/4 space-y-6">
             
             <!-- Navigation Tabs -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-1 flex overflow-x-auto hide-scrollbar">
-                <button @click="tab = 'overview'" :class="tab === 'overview' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Analytics Overview</button>
-                <button @click="tab = 'today'" :class="tab === 'today' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Daily Attendance</button>
-                <button @click="tab = 'workers'" :class="tab === 'workers' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Project Workers</button>
-                <button @click="tab = 'datewise'" :class="tab === 'datewise' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Date Wise List</button>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-1 flex overflow-x-auto gap-1">
+                <button @click="tab = 'overview'" :class="tab === 'overview' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="shrink-0 px-4 sm:px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Analytics Overview</button>
+                <button @click="tab = 'today'" :class="tab === 'today' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="shrink-0 px-4 sm:px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Daily Attendance</button>
+                <button @click="tab = 'workers'" :class="tab === 'workers' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="shrink-0 px-4 sm:px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Project Workers</button>
+                <button @click="tab = 'datewise'" :class="tab === 'datewise' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="shrink-0 px-4 sm:px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Date Wise List</button>
             </div>
 
             <!-- TAB: Overview -->
