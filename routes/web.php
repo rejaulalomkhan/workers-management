@@ -35,4 +35,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance', AttendanceManager::class);
     Route::get('/salary', SalaryReport::class);
     Route::get('/invoices', InvoiceManager::class);
+    Route::get('/invoices/{id}/view', function ($id) {
+        $invoice = \App\Models\Invoice::with('items', 'project')->findOrFail($id);
+        $setting = \App\Models\Setting::first();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.invoice', [
+            'invoice' => $invoice,
+            'setting' => $setting,
+        ])->setPaper('a4', 'portrait');
+        return response($pdf->output(), 200)->header('Content-Type', 'application/pdf');
+    })->name('invoices.view');
 });

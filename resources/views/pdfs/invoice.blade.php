@@ -22,7 +22,7 @@
         }
         @endif
         .container { padding: 5px 40px 5px 40px; }
-        .header-image { width: 100%; max-height: 150px; object-fit: contain; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        .header-image { width: 100%; max-height: 150px; object-fit: contain; margin-bottom: 10px;}
         table { width: 100%; border-collapse: collapse; margin-top: 30px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #f8f9fa; }
@@ -37,15 +37,17 @@
 </head>
 <body>
     @if($setting->header_image_path)
-        <img src="{{ public_path($setting->header_image_path) }}" class="header-image" alt="Header">
+        <div style="margin: 15px 35px 0px 35px;">
+            <img src="{{ public_path($setting->header_image_path) }}" class="header-image" alt="Header">
+        </div>
     @else
-        <div style="text-align:center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 5px;">
+        <div style="text-align:center; padding: 20px;">
             <h1 style="margin:0;">{{ $setting->company_name ?? 'COMPANY NAME' }}</h1>
             <p style="margin:5px 0 0 0;">{{ $setting->company_name_arabic }}</p>
         </div>
     @endif
     <div class="container">
-        <h2 style="text-align: center; font-size: 25px; color: #000000ff; background-color: #b3b3b3ff; padding: 2px 0;">TAX INVOICE</h2>
+        <h2 style="text-align: center; font-size: 25px; color: #000000ff; background-color: #cac3c3ff; padding: 2px 0;">TAX INVOICE</h2>
         <div style="float: right; text-align: right; margin-bottom: 10px; margin-top: -20px; font-size: 18px; font-weight: bold;">
             Invoice No: {{ $invoice->invoice_number }}<br>
             Date: {{ $invoice->invoice_date }}
