@@ -269,6 +269,18 @@
                             <h3 class="text-lg font-bold text-gray-800">Date Wise Workers List ({{ date('F Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }})</h3>
                             <p class="text-xs text-gray-500 mt-1">Summary of daily attendance collapsed by date</p>
                         </div>
+                        <div class="flex gap-2">
+                            <select wire:model.live="filterMonth" class="text-sm rounded border border-gray-300 py-1.5 pl-3 pr-8 focus:ring-blue-500 focus:border-blue-500">
+                                @for($i=1; $i<=12; $i++)
+                                    <option value="{{ $i }}">{{ date('F', mktime(0,0,0,$i, 1)) }}</option>
+                                @endfor
+                            </select>
+                            <select wire:model.live="filterYear" class="text-sm rounded border border-gray-300 py-1.5 pl-3 pr-8 focus:ring-blue-500 focus:border-blue-500">
+                                @for($y=date('Y')-2; $y<=date('Y')+1; $y++)
+                                    <option value="{{ $y }}">{{ $y }}</option>
+                                @endfor
+                            </select>
+                        </div>
                     </div>
                     
                     <div class="overflow-x-auto p-4 sm:p-6 space-y-4 bg-gray-50/50">
