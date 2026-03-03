@@ -62,6 +62,7 @@
                 <button @click="tab = 'overview'" :class="tab === 'overview' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Analytics Overview</button>
                 <button @click="tab = 'today'" :class="tab === 'today' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Daily Attendance</button>
                 <button @click="tab = 'workers'" :class="tab === 'workers' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Project Workers</button>
+                <button @click="tab = 'datewise'" :class="tab === 'datewise' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-2.5 rounded-md text-sm transition whitespace-nowrap">Date Wise List</button>
             </div>
 
             <!-- TAB: Overview -->
@@ -256,6 +257,75 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Date Wise List -->
+            <div x-show="tab === 'datewise'" style="display: none;" x-transition.opacity>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center sm:flex-row flex-col gap-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Date Wise Workers List ({{ date('F Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }})</h3>
+                            <p class="text-xs text-gray-500 mt-1">Summary of daily attendance collapsed by date</p>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto p-4 sm:p-6 space-y-4 bg-gray-50/50">
+                        @forelse($dateWiseWorkers as $dateString => $dateData)
+                            <div x-data="{ expanded: false }" class="bg-white border text-left border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                                <!-- Summary Row -->
+                                <button @click="expanded = !expanded" class="w-full px-4 py-4 sm:px-6 flex items-center justify-between hover:bg-gray-50 transition focus:outline-none">
+                                    <div class="flex items-center gap-3 sm:gap-4">
+                                        <div class="bg-blue-100 text-blue-800 p-2 rounded-lg font-bold flex flex-col items-center justify-center min-w-[3rem] leading-none text-center">
+                                            <span class="text-base sm:text-lg font-black">{{ \Carbon\Carbon::parse($dateString)->format('d') }}</span>
+                                            <span class="text-[9px] sm:text-[10px] uppercase mt-0.5">{{ \Carbon\Carbon::parse($dateString)->format('M') }}</span>
+                                        </div>
+                                        <div class="text-left leading-tight">
+                                            <div class="font-bold text-gray-900 border-none text-sm sm:text-base">{{ $dateData['date_display'] }}</div>
+                                            <div class="text-xs text-gray-500 mt-1"><span class="font-bold text-gray-700">{{ $dateData['total_workers'] }}</span> Present</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 sm:gap-6">
+                                        <div class="text-right">
+                                            <div class="font-black text-blue-600 text-base sm:text-xl border-none">{{ $dateData['total_hours'] }} <span class="text-[10px] sm:text-xs font-normal text-gray-400">hr</span></div>
+                                            <div class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">Total Hours</div>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                            <svg class="w-5 h-5 transform transition-transform duration-200" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </button>
+                                
+                                <!-- Detailed Workers List (Collapsible) -->
+                                <div x-show="expanded" style="display: none;" x-transition>
+                                    <div class="border-t border-gray-100 bg-gray-50/80 px-4 py-4 sm:px-6">
+                                        <table class="w-full text-left border-collapse text-sm">
+                                            <thead>
+                                                <tr class="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wider border-b border-gray-200">
+                                                    <th class="py-2 px-2 sm:px-3 font-semibold">Worker Name</th>
+                                                    <th class="py-2 px-2 sm:px-3 font-semibold">Trade</th>
+                                                    <th class="py-2 px-2 sm:px-3 font-semibold text-right">Hours Logged</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100">
+                                                @foreach($dateData['workers'] as $wd)
+                                                    <tr class="hover:bg-white transition cursor-pointer" onclick="window.location.href='/workers/{{ $wd['worker']->id }}'">
+                                                        <td class="py-3 px-2 sm:px-3 font-bold text-blue-600">{{ $wd['worker']->name }}</td>
+                                                        <td class="py-3 px-2 sm:px-3 text-gray-500 text-xs sm:text-sm">{{ $wd['worker']->trade }}</td>
+                                                        <td class="py-3 px-2 sm:px-3 text-right font-bold text-gray-700">{{ $wd['hours'] }} <span class="text-xs font-normal text-gray-400">hr</span></td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-10 bg-white rounded-lg border border-gray-200">
+                                <p class="text-gray-500 font-medium">No attendance records documented for this month.</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>

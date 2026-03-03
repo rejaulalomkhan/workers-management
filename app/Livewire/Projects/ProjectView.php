@@ -156,6 +156,7 @@ class ProjectView extends Component
         $monthReceivable = 0;
         
         $currentMonthWorkers = [];
+        $dateWiseWorkers = [];
         $uniqueWorkers = [];
 
         foreach($attendances as $att) {
@@ -187,8 +188,28 @@ class ProjectView extends Component
                 }
                 $currentMonthWorkers[$worker->id]['hours'] += $att->hours;
                 $currentMonthWorkers[$worker->id]['amount'] += ($att->hours * $rate);
+                
+                $dateStr = $attDate->format('Y-m-d');
+                if(!isset($dateWiseWorkers[$dateStr])) {
+                    $dateWiseWorkers[$dateStr] = [
+                        'date_display' => $attDate->format('d M, Y'),
+                        'total_workers' => 0,
+                        'total_hours' => 0,
+                        'workers' => []
+                    ];
+                }
+                $dateWiseWorkers[$dateStr]['total_workers'] += 1;
+                $dateWiseWorkers[$dateStr]['total_hours'] += $att->hours;
+                $dateWiseWorkers[$dateStr]['workers'][] = [
+                    'worker' => $worker,
+                    'hours' => $att->hours,
+                    'amount' => ($att->hours * $rate)
+                ];
             }
         }
+        
+        // Sort descending by date
+        krsort($dateWiseWorkers);
         
         $availableWorkersForTodaySelect = Worker::whereNotIn('id', array_keys($this->todayAttendances))->get();
         
@@ -201,6 +222,7 @@ class ProjectView extends Component
             'monthHours' => $monthHours,
             'monthReceivable' => $monthReceivable,
             'currentMonthWorkers' => $currentMonthWorkers,
+            'dateWiseWorkers' => $dateWiseWorkers,
             'allWorkers' => collect($uniqueWorkers)->values(),
             
             'todaysWorkersList' => Worker::whereIn('id', array_keys($this->todayAttendances))->orderBy('name')->get()->keyBy('id'),
