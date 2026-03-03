@@ -7,7 +7,7 @@ use App\Models\Worker;
 use App\Models\Attendance;
 use App\Models\Setting;
 use Carbon\Carbon;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalaryReport extends Component
 {
@@ -74,13 +74,18 @@ class SalaryReport extends Component
     public function exportPdf()
     {
         $setting = Setting::first();
-        $dateLabel = Carbon::createDate($this->year, $this->month, 1)->format('F Y');
+        $dateLabel = Carbon::createFromDate($this->year, $this->month, 1)->format('F Y');
+        $fileName = 'salary_report_' . $this->year . '_' . $this->month . '.pdf';
 
-        return Pdf::view('pdfs.salary', [
+        $pdf = Pdf::loadView('pdfs.salary', [
             'reportData' => $this->reportData,
             'dateLabel' => $dateLabel,
-            'setting' => $setting
-        ])->format('a4')->download('salary_report_'.$this->year.'_'.$this->month.'.pdf');
+            'setting' => $setting,
+        ])->setPaper('a4', 'portrait');
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->stream();
+        }, $fileName);
     }
 
     public function render()

@@ -10,7 +10,7 @@ use App\Models\Setting;
 use App\Models\Attendance;
 use App\Models\Worker;
 use Carbon\Carbon;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceManager extends Component
 {
@@ -170,10 +170,14 @@ class InvoiceManager extends Component
         $invoice = Invoice::with('items', 'project')->findOrFail($invoiceId);
         $setting = Setting::first();
 
-        return Pdf::view('pdfs.invoice', [
+        $pdf = Pdf::loadView('pdfs.invoice', [
             'invoice' => $invoice,
-            'setting' => $setting
-        ])->format('a4')->download('Invoice_'.$invoice->invoice_number.'.pdf');
+            'setting' => $setting,
+        ])->setPaper('a4', 'portrait');
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->stream();
+        }, 'Invoice_' . $invoice->invoice_number . '.pdf');
     }
 
     public function delete($id)
