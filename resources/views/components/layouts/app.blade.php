@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ $title ?? 'FHTS System' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php $branding = \App\Models\Setting::first(); @endphp
+    @if($branding && $branding->logo_path)
+        <link rel="icon" href="{{ asset($branding->logo_path) }}">
+    @endif
     @livewireStyles
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased pb-20 md:pb-0 md:pl-64" x-data="{ sidebarOpen: false }">
@@ -17,7 +21,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-                <a href="/" class="text-lg font-bold tracking-tight">FHTS System</a>
+                <a href="/" class="flex items-center gap-2 text-lg font-bold tracking-tight">
+                    @if(isset($branding) && $branding->logo_path)
+                        <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="h-6 w-auto object-contain bg-white rounded-sm px-1 py-0.5">
+                    @endif
+                    FHTS System
+                </a>
             </div>
             <form method="POST" action="/logout" class="block">
                 @csrf
@@ -35,7 +44,12 @@
     <!-- Sidebar -->
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="flex flex-col w-64 bg-blue-800 text-white fixed h-full top-0 left-0 shadow-[4px_0_24px_rgba(0,0,0,0.15)] z-50 transform transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0">
         <div class="px-6 py-5 border-b border-blue-700 flex justify-between items-center">
-            <a href="/" class="font-bold text-2xl">FHTS System</a>
+            <a href="/" class="flex items-center gap-2 font-bold text-2xl">
+                @if(isset($branding) && $branding->logo_path)
+                    <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="h-8 w-auto object-contain bg-white rounded-sm p-1">
+                @endif
+                <span class="truncate">FHTS System</span>
+            </a>
             <button @click="sidebarOpen = false" class="md:hidden text-white hover:text-gray-300">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>

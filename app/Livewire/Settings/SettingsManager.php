@@ -21,6 +21,8 @@ class SettingsManager extends Component
     
     public $new_logo;
     public $new_header_image;
+    public $existing_logo;
+    public $existing_header_image;
 
     public function mount()
     {
@@ -34,6 +36,9 @@ class SettingsManager extends Component
         $this->email = $setting->email;
         $this->currency = $setting->currency ?? 'AED';
         $this->vat_rate = $setting->vat_rate ?? 5.00;
+        
+        $this->existing_logo = $setting->logo_path;
+        $this->existing_header_image = $setting->header_image_path;
     }
 
     public function save()
@@ -46,13 +51,27 @@ class SettingsManager extends Component
         $setting = Setting::first() ?? new Setting();
 
         if ($this->new_logo) {
+            if ($setting->logo_path) {
+                $oldPath = str_replace('storage/', '', $setting->logo_path);
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                }
+            }
             $path = $this->new_logo->store('settings', 'public');
             $setting->logo_path = 'storage/' . $path;
+            $this->existing_logo = $setting->logo_path;
         }
 
         if ($this->new_header_image) {
+            if ($setting->header_image_path) {
+                $oldPath = str_replace('storage/', '', $setting->header_image_path);
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                }
+            }
             $path = $this->new_header_image->store('settings', 'public');
             $setting->header_image_path = 'storage/' . $path;
+            $this->existing_header_image = $setting->header_image_path;
         }
 
         $setting->company_name = $this->company_name;
@@ -66,7 +85,42 @@ class SettingsManager extends Component
         
         $setting->save();
         
+        $this->new_logo = null;
+        $this->new_header_image = null;
+        
         session()->flash('success', 'Settings successfully updated.');
+    }
+
+    public function removeLogo()
+    {
+        $setting = Setting::first();
+        if ($setting && $setting->logo_path) {
+            $path = str_replace('storage/', '', $setting->logo_path);
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+            }
+            $setting->logo_path = null;
+            $setting->save();
+            $this->existing_logo = null;
+        }
+        $this->new_logo = null;
+        session()->flash('success', 'Logo removed successfully.');
+    }
+
+    public function removeHeaderImage()
+    {
+        $setting = Setting::first();
+        if ($setting && $setting->header_image_path) {
+            $path = str_replace('storage/', '', $setting->header_image_path);
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+            }
+            $setting->header_image_path = null;
+            $setting->save();
+            $this->existing_header_image = null;
+        }
+        $this->new_header_image = null;
+        session()->flash('success', 'Header image removed successfully.');
     }
 
     public function render()

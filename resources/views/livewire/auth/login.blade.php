@@ -1,7 +1,13 @@
 <div class="w-full max-w-md bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-10 mx-4 border border-gray-100">
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500">FHTS Software</h2>
-        <p class="text-gray-500 mt-2 text-sm font-medium tracking-wide">Enter your credentials to access</p>
+        @php $branding = \App\Models\Setting::first(); @endphp
+        <div class="flex items-center justify-center gap-3 mb-2">
+            @if($branding && $branding->logo_path)
+                <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="h-10 w-auto object-contain filter drop-shadow-sm">
+            @endif
+            <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500">FHTS Software</h2>
+        </div>
+        <p class="text-gray-500 text-sm font-medium tracking-wide">Enter your credentials to access</p>
     </div>
 
     <form wire:submit="login" class="space-y-6">
