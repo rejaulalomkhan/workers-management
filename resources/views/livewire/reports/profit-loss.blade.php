@@ -18,12 +18,73 @@
                     <option value="{{ $y }}">{{ $y }}</option>
                 @endfor
             </select>
-            <select wire:model.live="selectedProject" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 sm:text-sm p-2 border">
-                <option value="all">All Projects</option>
-                @foreach($projects as $p)
-                    <option value="{{ $p->id }}">{{ $p->name }}</option>
-                @endforeach
-            </select>
+            {{-- Custom compact project dropdown (safe against special chars in project names) --}}
+            @php
+                $projectMap = $projects->mapWithKeys(fn($p) => [$p->id => $p->name]);
+                $currentLabel = $selectedProject === 'all'
+                    ? 'All Projects'
+                    : ($projectMap[$selectedProject] ?? 'All Projects');
+            @endphp
+            <div class="relative" x-data="{
+                    open: false,
+                    selected: '{{ $selectedProject }}',
+                    label: {{ json_encode($currentLabel) }},
+                    projects: {{ json_encode($projectMap) }},
+                    select(val) {
+                        this.selected = val;
+                        this.label = val === 'all' ? 'All Projects' : (this.projects[val] ?? 'All Projects');
+                        this.open = false;
+                        $wire.set('selectedProject', val);
+                    }
+                }"
+                @keydown.escape="open = false"
+                @click.outside="open = false">
+
+                <button @click="open = !open" type="button"
+                        class="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white shadow-sm px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+                    </svg>
+                    <span x-text="label" class="max-w-[120px] truncate"></span>
+                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform duration-150"
+                         :class="open ? 'rotate-180' : ''"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="absolute right-0 mt-1 w-80 max-w-[92vw] bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-72 overflow-y-auto"
+                     style="display:none;">
+                    <ul class="py-1 text-sm text-gray-700">
+                        <li>
+                            <button type="button" @click="select('all')"
+                                    class="w-full text-left px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition"
+                                    :class="selected === 'all' ? 'bg-blue-50 text-blue-700 font-semibold' : ''">
+                                All Projects
+                            </button>
+                        </li>
+                        <li class="border-t border-gray-100"></li>
+                        @foreach($projects as $p)
+                        <li>
+                            {{-- Store id in data attribute; click reads from Alpine data map --}}
+                            <button type="button"
+                                    x-on:click="select('{{ $p->id }}')"
+                                    class="w-full text-left px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition leading-snug"
+                                    :class="selected == '{{ $p->id }}' ? 'bg-blue-50 text-blue-700 font-semibold' : ''">
+                                {{ $p->name }}
+                            </button>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
