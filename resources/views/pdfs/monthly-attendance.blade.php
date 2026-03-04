@@ -5,7 +5,6 @@
     <title>Monthly Attendance - {{ date('F Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }}</title>
     <style>
         body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 10px; color: #333; margin: 0; padding: 10px; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
         .comp-name { font-size: 20px; font-bold: true; color: #1e3a8a; margin-bottom: 4px; }
         .report-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
         .meta { font-size: 11px; color: #666; }
@@ -28,14 +27,11 @@
         $settings = \App\Models\Setting::first();
     @endphp
 
-    <div class="header">
-        <div class="comp-name">{{ $settings->company_name ?? 'FHTS Software' }}</div>
-        <div class="meta" style="font-size:12px; font-weight:bold; color:#1e3a8a; margin-top:4px;">
-            DATE: {{ $dateLabel ?? date('d.m.Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) . '-' . date('d.m.Y', mktime(0,0,0,$filterMonth, date('t', mktime(0,0,0,$filterMonth,1,$filterYear)), $filterYear)) }}
-        </div>
+    <div style="text-align: center; border: 1px solid #999; padding: 5px 1px; font-size: 12px; font-weight: bold;">
+        {{ $settings->company_name ?? 'FHTS Software' }} &nbsp; &nbsp; &nbsp; 
+        DATE: {{ $dateLabel ?? date('d.m.Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) . '-' . date('d.m.Y', mktime(0,0,0,$filterMonth, date('t', mktime(0,0,0,$filterMonth,1,$filterYear)), $filterYear)) }}
     </div>
-
-    <table>
+    <table style="margin-top: -2px;">
         <thead>
             <tr>
                 <th class="sn-col">SN</th>
