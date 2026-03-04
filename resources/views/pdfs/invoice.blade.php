@@ -55,8 +55,8 @@
         </div>
         </div>
 
-        <div style="width: 100%; clear: both; gap: 10px;">
-            <div style="float: left; width: 85%; font-family: 'Times New Roman', Times, serif; font-size: 16px;">
+        
+            <div style="margin-top: 20px; float: left; width: 62%; font-family: 'Times New Roman', Times, serif; font-size: 16px;">
                 Billing To:<br>
                 Date Of Invoice:{{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/m/Y') }}<br>
                 <div class="font-bold" style="font-size: 16px;">{{ strtoupper($invoice->project->customer_name) }}</div>
@@ -66,11 +66,11 @@
                 @if($invoice->project->customer_phone)
                 <div>TEL: {{ $invoice->project->customer_phone }}</div>
                 @endif
-                <div>PROJECT: {{ $invoice->project->name }}</div>
+                <div style="white-space: pre-line;">PROJECT: {{ $invoice->project->name }}</div>
                 @if($invoice->project->customer_subject)
                 <div>Sub: {{ $invoice->project->customer_subject }}</div>
                 @endif
-                <div>Address Office: {{ $invoice->project->customer_address }}</div>
+                <div style="white-space: pre-line;">Address Office: {{ $invoice->project->customer_address }}</div>
                 <br>
                 Billing From:<br>
                 {{ $setting->company_name }}<br>
@@ -80,7 +80,7 @@
                 @endif     
                 TRN: {{ $setting->trn }}
             </div>     
-        </div>
+        
 
         <div style="clear: both;"></div>
 

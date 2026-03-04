@@ -72,7 +72,7 @@
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Project Name *</label>
-                                    <input type="text" wire:model="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                                    <textarea wire:model="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" rows="3"></textarea>
                                     @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
@@ -87,7 +87,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Customer Address</label>
-                                        <input type="text" wire:model="customer_address" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                                        <textarea wire:model="customer_address" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" rows="3"></textarea>
                                     </div>
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
