@@ -13,6 +13,8 @@ class AttendanceManager extends Component
     public $project_id;
     public $month;
     public $year;
+    public $workerFilter = 'all';   // 'all' or worker id
+    public $savedCell = null;       // 'workerId.day' — used to flash green checkmark
     
     public $projects;
     public $daysInMonth;
@@ -32,7 +34,7 @@ class AttendanceManager extends Component
 
     public function updated($propertyName)
     {
-        if (in_array($propertyName, ['project_id', 'month', 'year'])) {
+        if (in_array($propertyName, ['project_id', 'month', 'year', 'workerFilter'])) {
             $this->loadData();
         }
     }
@@ -44,6 +46,9 @@ class AttendanceManager extends Component
             $worker_id = $parts[0];
             $day = $parts[1];
             $this->saveDay($worker_id, $day, $value);
+            $this->savedCell = $worker_id . '.' . $day;
+            // Clear the flash indicator after 2 seconds via JS dispatch
+            $this->dispatch('cell-saved', cell: $this->savedCell);
         }
     }
 
@@ -68,6 +73,34 @@ class AttendanceManager extends Component
         );
     }
 
+    public function fillAllPresent($worker_id, $hours = 8)
+    {
+        if (!$this->project_id || !$this->month || !$this->year || !$this->daysInMonth) return;
+
+        for ($day = 1; $day <= $this->daysInMonth; $day++) {
+            $existing = $this->attendances[$worker_id][$day] ?? '';
+            // Only fill empty cells — don't overwrite existing entries
+            if ($existing === '' || $existing === null) {
+                $this->saveDay($worker_id, $day, (string)$hours);
+                $this->attendances[$worker_id][$day] = (string)$hours;
+            }
+        }
+        session()->flash('bulk_saved_' . $worker_id, true);
+    }
+
+    public function clearWorker($worker_id)
+    {
+        if (!$this->project_id || !$this->month || !$this->year) return;
+
+        Attendance::where('worker_id', $worker_id)
+            ->where('project_id', $this->project_id)
+            ->whereYear('date', $this->year)
+            ->whereMonth('date', $this->month)
+            ->delete();
+
+        $this->attendances[$worker_id] = [];
+    }
+
     public function loadData()
     {
         $this->attendances = [];
@@ -88,10 +121,16 @@ class AttendanceManager extends Component
 
     public function render()
     {
-        $workers = Worker::where('is_active', true)->orderBy('name')->get();
+        $query = Worker::where('is_active', true)->orderBy('name');
+        if ($this->workerFilter !== 'all') {
+            $query->where('id', $this->workerFilter);
+        }
+        $workers = $query->get();
+        $allWorkers = Worker::where('is_active', true)->orderBy('name')->get();
 
         return view('livewire.attendance.attendance-manager', [
-            'workers' => $workers
+            'workers'    => $workers,
+            'allWorkers' => $allWorkers,
         ]);
     }
 }
