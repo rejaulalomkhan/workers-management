@@ -86,8 +86,8 @@ class InvoiceManager extends Component
         $subtotal = 0;
 
         foreach ($trades as $trade => $total_hours) {
-            // Find rate in project categories
-            $cat = $project->categories->where('name', $trade)->first();
+            // Find rate in project categories (case-insensitive match)
+            $cat = $project->categories->first(fn($c) => strtolower(trim($c->name)) === strtolower(trim($trade)));
             $rate = $cat ? $cat->billing_rate : 0;
             $amount = $rate * $total_hours;
             $subtotal += $amount;

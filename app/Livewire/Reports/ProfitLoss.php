@@ -73,10 +73,10 @@ class ProfitLoss extends Component
             $project  = $att->project;
             $trade    = $worker->trade;
 
-            // Find billing rate from project categories matching worker's trade
+            // Find billing rate from project categories matching worker's trade (case-insensitive)
             $billingRate = 0;
             if ($project) {
-                $cat = $project->categories->where('name', $trade)->first();
+                $cat = $project->categories->first(fn($c) => strtolower(trim($c->name)) === strtolower(trim($trade)));
                 $billingRate = $cat ? (float) $cat->billing_rate : 0;
             }
 

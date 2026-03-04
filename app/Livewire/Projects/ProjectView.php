@@ -166,8 +166,9 @@ class ProjectView extends Component
             $uniqueWorkers[$worker->id] = $worker;
             
             $rate = 0;
-            if(isset($categories[$worker->trade])) {
-                $rate = $categories[$worker->trade]->billing_rate;
+            if ($worker && $worker->trade) {
+                $cat = $categories->first(fn($c) => strtolower(trim($c->name)) === strtolower(trim($worker->trade)));
+                if ($cat) $rate = $cat->billing_rate;
             }
             
             $totalHours += $att->hours;
