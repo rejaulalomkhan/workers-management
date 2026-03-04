@@ -14,17 +14,38 @@ class MonthlyAttendance extends Component
     public $filterYear;
     public $projectId = '';
 
+    // PDF date range (used when generating PDF)
+    public $pdfFromDate;
+    public $pdfToDate;
+
     public function mount()
     {
         $this->filterMonth = date('n');
-        $this->filterYear = date('Y');
+        $this->filterYear  = date('Y');
+
+        // Default PDF range = first & last day of current month
+        $this->pdfFromDate = date('Y-m-01');
+        $this->pdfToDate   = date('Y-m-t');
     }
 
-    public function getReportData()
+    public function getReportData(?string $from = null, ?string $to = null)
     {
-        $startDate = Carbon::createFromDate($this->filterYear, $this->filterMonth, 1)->startOfMonth();
-        $endDate = $startDate->copy()->endOfMonth();
-        $daysInMonth = $startDate->daysInMonth;
+        if ($from && $to) {
+            $startDate   = Carbon::parse($from)->startOfDay();
+            $endDate     = Carbon::parse($to)->endOfDay();
+        } else {
+            $startDate   = Carbon::createFromDate($this->filterYear, $this->filterMonth, 1)->startOfMonth();
+            $endDate     = $startDate->copy()->endOfMonth();
+        }
+
+        // Build day-range array (day number → date string)
+        $dayList = [];
+        $cursor  = $startDate->copy();
+        while ($cursor->lte($endDate)) {
+            $dayList[] = $cursor->format('Y-m-d');
+            $cursor->addDay();
+        }
+        $daysInMonth = count($dayList);
 
         $query = Worker::query();
         if ($this->projectId) {
@@ -36,63 +57,76 @@ class MonthlyAttendance extends Component
 
         $workers = $query->orderBy('name')->get();
 
-        $attendances = Attendance::whereIn('worker_id', $workers->pluck('id'))
+        $attendanceQuery = Attendance::whereIn('worker_id', $workers->pluck('id'))
             ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
-            
+
         if ($this->projectId) {
-            $attendances->where('project_id', $this->projectId);
+            $attendanceQuery->where('project_id', $this->projectId);
         }
-        
-        $attendances = $attendances->get()->groupBy('worker_id');
+
+        $attendances = $attendanceQuery->get()->groupBy('worker_id');
 
         $reportData = [];
         foreach ($workers as $worker) {
             $workerAttendances = $attendances->get($worker->id, collect());
-            $days = [];
+            $days       = [];
             $totalHours = 0;
-            
-            for ($day = 1; $day <= $daysInMonth; $day++) {
-                $currentDate = $startDate->copy()->addDays($day - 1)->format('Y-m-d');
-                $att = $workerAttendances->firstWhere('date', $currentDate);
-                
+
+            foreach ($dayList as $i => $dateStr) {
+                $dayNum = $i + 1; // 1-based column
+                $att    = $workerAttendances->firstWhere('date', $dateStr);
+
                 if ($att && is_numeric($att->hours)) {
-                    $days[$day] = $att->hours;
-                    $totalHours += $att->hours;
+                    $days[$dayNum] = $att->hours;
+                    $totalHours   += $att->hours;
                 } elseif ($att && $att->hours === 'A') {
-                    $days[$day] = 'A';
+                    $days[$dayNum] = 'A';
                 } else {
-                    $days[$day] = '-';
+                    $days[$dayNum] = '-';
                 }
             }
-            
+
             $reportData[] = [
-                'worker' => $worker,
-                'days' => $days,
+                'worker'     => $worker,
+                'days'       => $days,
                 'totalHours' => $totalHours,
             ];
         }
 
         return [
-            'reportData' => $reportData,
+            'reportData'  => $reportData,
             'daysInMonth' => $daysInMonth,
-            'startDate' => $startDate,
+            'startDate'   => $startDate,
+            'endDate'     => $endDate,
+            'dayList'     => $dayList,
         ];
     }
 
     public function downloadPdf()
     {
-        $data = $this->getReportData();
+        $from = $this->pdfFromDate;
+        $to   = $this->pdfToDate;
+
+        $data    = $this->getReportData($from, $to);
         $project = $this->projectId ? Project::find($this->projectId) : null;
-        
-        $pdfName = 'Monthly_Attendance_' . date('F_Y', mktime(0,0,0,$this->filterMonth, 1, $this->filterYear)) . '.pdf';
+
+        $fromLabel = Carbon::parse($from)->format('d.m.Y');
+        $toLabel   = Carbon::parse($to)->format('d.m.Y');
+        $dateLabel = $fromLabel . ' – ' . $toLabel;
+
+        $pdfName = 'Attendance_' . Carbon::parse($from)->format('d-m-Y')
+                    . '_to_' . Carbon::parse($to)->format('d-m-Y') . '.pdf';
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.monthly-attendance', [
-            'reportData' => $data['reportData'],
+            'reportData'  => $data['reportData'],
             'daysInMonth' => $data['daysInMonth'],
-            'startDate' => $data['startDate'],
+            'startDate'   => $data['startDate'],
+            'endDate'     => $data['endDate'],
+            'dayList'     => $data['dayList'],
             'filterMonth' => $this->filterMonth,
-            'filterYear' => $this->filterYear,
-            'project' => $project,
+            'filterYear'  => $this->filterYear,
+            'project'     => $project,
+            'dateLabel'   => $dateLabel,
         ])->setPaper('a4', 'landscape');
 
         return response()->streamDownload(function () use ($pdf) {
@@ -103,13 +137,13 @@ class MonthlyAttendance extends Component
     public function render()
     {
         $projects = Project::orderBy('name')->get();
-        $data = $this->getReportData();
+        $data     = $this->getReportData();
 
         return view('livewire.reports.monthly-attendance', [
-            'projects' => $projects,
-            'reportData' => $data['reportData'],
+            'projects'    => $projects,
+            'reportData'  => $data['reportData'],
             'daysInMonth' => $data['daysInMonth'],
-            'startDate' => $data['startDate'],
+            'startDate'   => $data['startDate'],
         ]);
     }
 }

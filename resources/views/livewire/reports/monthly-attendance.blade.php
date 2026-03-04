@@ -1,17 +1,85 @@
-<div class="space-y-6">
-    <!-- Header -->
+<div class="space-y-6" x-data="{ showDateModal: false }">
+
+    {{-- ══ Date Range Modal ══ --}}
+    <div x-show="showDateModal"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+         style="display:none;">
+        <div @click.outside="showDateModal = false"
+             class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+
+            {{-- Modal Header --}}
+            <div class="bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h3 class="text-white font-bold text-base">Select Date Range</h3>
+                    <p class="text-blue-200 text-xs mt-0.5">PDF will cover the selected period</p>
+                </div>
+                <button @click="showDateModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Modal Body --}}
+            <div class="px-6 py-5 space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        📅 From Date
+                    </label>
+                    <input type="date" wire:model="pdfFromDate"
+                           class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        📅 To Date
+                    </label>
+                    <input type="date" wire:model="pdfToDate"
+                           class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                </div>
+            </div>
+
+            {{-- Modal Footer --}}
+            <div class="px-6 pb-5 flex gap-3">
+                <button @click="showDateModal = false"
+                        class="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-600 text-sm font-medium hover:bg-gray-50 transition">
+                    Cancel
+                </button>
+                <button wire:click="downloadPdf" @click="showDateModal = false"
+                        class="flex-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span wire:loading.remove wire:target="downloadPdf">Download PDF</span>
+                    <span wire:loading wire:target="downloadPdf">Generating...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- ══ Page Header ══ --}}
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div class="flex items-center space-x-4">
             <h2 class="text-2xl font-bold text-gray-800">Monthly Attendance Report</h2>
         </div>
         <div>
-            <button wire:click="downloadPdf" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span wire:loading.remove wire:target="downloadPdf">Download PDF</span>
-                <span wire:loading wire:target="downloadPdf">Generating...</span>
+            <button @click="showDateModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Download PDF
             </button>
         </div>
     </div>
+
 
     <!-- Filters -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">

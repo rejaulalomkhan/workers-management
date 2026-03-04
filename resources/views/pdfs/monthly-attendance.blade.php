@@ -30,20 +30,16 @@
 
     <div class="header">
         <div class="comp-name">{{ $settings->company_name ?? 'FHTS Software' }}</div>
-        <div class="report-title">
-           DATE: {{ date('F Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }}
+        <div class="meta" style="font-size:12px; font-weight:bold; color:#1e3a8a; margin-top:4px;">
+            DATE: {{ $dateLabel ?? date('d.m.Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) . '-' . date('d.m.Y', mktime(0,0,0,$filterMonth, date('t', mktime(0,0,0,$filterMonth,1,$filterYear)), $filterYear)) }}
         </div>
-        <!-- <div class="meta">
-            Project: {{ $project ? $project->name : 'All Projects' }} | 
-            Generated on: {{ \Carbon\Carbon::now()->format('d M Y, h:i A') }}
-        </div> -->
     </div>
 
     <table>
         <thead>
             <tr>
                 <th class="sn-col">SN</th>
-                <th class="sn-col">ID No.</th>
+                <th class="sn-col" style="width: 25px;">ID No.</th>
                 <th class="name-col">Name</th>
                 <th class="trade-col">Trade</th>
                 @for($d=1; $d<=$daysInMonth; $d++)
