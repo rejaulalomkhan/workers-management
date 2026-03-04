@@ -34,6 +34,7 @@
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Hr</th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pay</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Slip</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -59,6 +60,16 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-gray-900">
                                 {{ number_format($row['total_pay'], 2) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <button wire:click="downloadWorkerPdf({{ $row['worker_id'] }})"
+                                    wire:loading.attr="disabled"
+                                    wire:target="downloadWorkerPdf({{ $row['worker_id'] }})"
+                                    class="inline-flex items-center gap-1 text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded shadow transition disabled:opacity-50">
+                                    <svg class="w-3.5 h-3.5" wire:loading.remove wire:target="downloadWorkerPdf({{ $row['worker_id'] }})" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    <div wire:loading wire:target="downloadWorkerPdf({{ $row['worker_id'] }})" class="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                                    Slip PDF
+                                </button>
                             </td>
                         </tr>
                     @empty

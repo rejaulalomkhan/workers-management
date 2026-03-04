@@ -210,6 +210,7 @@
                                     <th class="px-6 py-3 font-medium">Date</th>
                                     <th class="px-6 py-3 font-medium">Notes</th>
                                     <th class="px-6 py-3 font-medium text-right">Amount (AED)</th>
+                                    <th class="px-6 py-3 font-medium text-center">Slip</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
@@ -218,15 +219,75 @@
                                         <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }}</td>
                                         <td class="px-6 py-4 text-sm text-gray-600">{{ $payment->notes ?? '-' }}</td>
                                         <td class="px-6 py-4 text-right font-bold text-green-600">+ {{ number_format($payment->amount, 2) }}</td>
+                                        <td class="px-6 py-4 text-center">
+                                            <a href="/payment-receipt/{{ $worker->id }}/{{ \Carbon\Carbon::parse($payment->payment_date)->month }}/{{ \Carbon\Carbon::parse($payment->payment_date)->year }}"
+                                               target="_blank"
+                                               class="inline-flex items-center gap-1 text-xs px-2.5 py-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium rounded transition">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                {{ \Carbon\Carbon::parse($payment->payment_date)->format('M Y') }}
+                                            </a>
+                                        </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="3" class="px-6 py-8 text-center text-gray-500">No payment history found.</td></tr>
+                                    <tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No payment history found.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
+
+                {{-- Salary Slips --}}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-6"
+                     x-data="{ slipMonth: {{ date('n') }}, slipYear: {{ date('Y') }} }">
+                    <div class="px-6 py-4 border-b border-gray-100 bg-indigo-50 flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-indigo-800 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Download Salary Slip
+                        </h3>
+                    </div>
+                    <div class="p-6 flex flex-wrap items-end gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                            <select x-model="slipMonth" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 sm:text-sm p-2 border">
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                            <select x-model="slipYear" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 sm:text-sm p-2 border">
+                                @for($y = date('Y') - 2; $y <= date('Y') + 1; $y++)
+                                    <option value="{{ $y }}">{{ $y }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div>
+                            <a :href="`/salary/worker-pdf/{{ $worker->id }}/${slipMonth}/${slipYear}`"
+                               target="_blank"
+                               class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-5 rounded-md shadow transition text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Download Slip PDF
+                            </a>
+                        </div>
+                        <p class="text-xs text-gray-400 w-full mt-1">
+                            Generates a detailed salary slip PDF for <strong>{{ $worker->name }}</strong> for the selected month including daily attendance grid.
+                        </p>
+                    </div>
+                </div>
 
         </div>
     </div>

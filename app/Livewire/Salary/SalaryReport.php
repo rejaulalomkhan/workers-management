@@ -79,13 +79,22 @@ class SalaryReport extends Component
 
         $pdf = Pdf::loadView('pdfs.salary', [
             'reportData' => $this->reportData,
-            'dateLabel' => $dateLabel,
-            'setting' => $setting,
+            'dateLabel'  => $dateLabel,
+            'setting'    => $setting,
         ])->setPaper('a4', 'portrait');
 
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->stream();
         }, $fileName);
+    }
+
+    public function downloadWorkerPdf($workerId)
+    {
+        $this->redirect(route('salary.worker-pdf', [
+            'worker' => $workerId,
+            'month'  => $this->month,
+            'year'   => $this->year,
+        ]));
     }
 
     public function render()

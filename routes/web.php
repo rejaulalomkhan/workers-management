@@ -1,18 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Livewire\Settings\SettingsManager;
+use App\Http\Controllers\PdfController;
+use App\Livewire\Attendance\AttendanceManager;
+use App\Livewire\Auth\Login;
+use App\Livewire\Invoices\InvoiceManager;
 use App\Livewire\Projects\ProjectManager;
 use App\Livewire\Projects\ProjectView;
+use App\Livewire\Reports\MonthlyAttendance;
+use App\Livewire\Reports\ProfitLoss;
+use App\Livewire\Salary\SalaryReport;
+use App\Livewire\Settings\SettingsManager;
 use App\Livewire\Workers\WorkerManager;
 use App\Livewire\Workers\WorkerView;
-use App\Livewire\Attendance\AttendanceManager;
-use App\Livewire\Salary\SalaryReport;
-use App\Livewire\Invoices\InvoiceManager;
-use App\Livewire\Reports\ProfitLoss;
-use App\Livewire\Auth\Login;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
+// ── Auth ──────────────────────────────────────────────────────────────────────
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 
 Route::post('/logout', function () {
@@ -22,28 +25,27 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
+// ── Authenticated Routes ───────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return redirect('/projects');
-    });
 
-    Route::get('/settings', SettingsManager::class);
-    Route::get('/reports/monthly-attendance', \App\Livewire\Reports\MonthlyAttendance::class)->name('reports.monthly-attendance');
-    Route::get('/reports/profit-loss', ProfitLoss::class)->name('reports.profit-loss');
-    Route::get('/projects', ProjectManager::class);
+    Route::get('/', fn() => redirect('/projects'));
+
+    // Core modules
+    Route::get('/projects',           ProjectManager::class);
     Route::get('/projects/{project}', ProjectView::class)->name('projects.view');
-    Route::get('/workers', WorkerManager::class);
-    Route::get('/workers/{worker}', WorkerView::class)->name('workers.view');
-    Route::get('/attendance', AttendanceManager::class);
-    Route::get('/salary', SalaryReport::class);
-    Route::get('/invoices', InvoiceManager::class);
-    Route::get('/invoices/{id}/view', function ($id) {
-        $invoice = \App\Models\Invoice::with('items', 'project')->findOrFail($id);
-        $setting = \App\Models\Setting::first();
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.invoice', [
-            'invoice' => $invoice,
-            'setting' => $setting,
-        ])->setPaper('a4', 'portrait');
-        return response($pdf->output(), 200)->header('Content-Type', 'application/pdf');
-    })->name('invoices.view');
+    Route::get('/workers',            WorkerManager::class);
+    Route::get('/workers/{worker}',   WorkerView::class)->name('workers.view');
+    Route::get('/attendance',         AttendanceManager::class);
+    Route::get('/salary',             SalaryReport::class);
+    Route::get('/invoices',           InvoiceManager::class);
+    Route::get('/settings',           SettingsManager::class);
+
+    // Reports
+    Route::get('/reports/monthly-attendance', MonthlyAttendance::class)->name('reports.monthly-attendance');
+    Route::get('/reports/profit-loss',        ProfitLoss::class)->name('reports.profit-loss');
+
+    // PDF downloads / viewers
+    Route::get('/invoices/{id}/view',                        [PdfController::class, 'viewInvoice'])->name('invoices.view');
+    Route::get('/salary/worker-pdf/{worker}/{month}/{year}', [PdfController::class, 'workerSalaryPdf'])->name('salary.worker-pdf');
+    Route::get('/payment-receipt/{worker}/{month}/{year}',   [PdfController::class, 'paymentReceipt'])->name('payment.receipt');
 });
