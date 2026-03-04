@@ -6,9 +6,20 @@
     <title>{{ $title ?? 'FHTS System' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @php $branding = \App\Models\Setting::first(); @endphp
+
+    {{-- ── PWA Meta ── --}}
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f255a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="{{ $branding->company_name ?? 'FHTS' }}">
+    <meta name="application-name" content="{{ $branding->company_name ?? 'FHTS' }}">
     @if($branding && $branding->logo_path)
         <link rel="icon" href="{{ asset($branding->logo_path) }}">
+        <link rel="apple-touch-icon" href="{{ asset($branding->logo_path) }}">
     @endif
+
     @livewireStyles
 
     <style>
@@ -290,5 +301,50 @@
     </nav>
 
     @livewireScripts
+
+    {{-- ── PWA: wire:navigate page transition loader ── --}}
+    <div id="pwa-loader"
+         style="display:none; position:fixed; inset:0; z-index:9999;
+                background:#0f255a; flex-direction:column;
+                align-items:center; justify-content:center; gap:16px;">
+        @if($branding && $branding->logo_path)
+        <img src="{{ asset($branding->logo_path) }}"
+             style="width:72px; height:72px; object-fit:contain;
+                    border-radius:16px; background:#fff; padding:8px;
+                    animation: pulse-logo 1.2s ease-in-out infinite;">
+        @endif
+        <div style="width:36px; height:3px; background:rgba(255,255,255,.15); border-radius:2px; overflow:hidden;">
+            <div id="pwa-bar" style="height:100%; width:0%; background:#60a5fa; border-radius:2px;
+                           transition: width .8s ease; animation: load-bar 1.2s ease-in-out infinite;"></div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes pulse-logo { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.7; transform:scale(.93); } }
+        @keyframes load-bar   { 0%{ width:0% } 60%{ width:85% } 100%{ width:100% } }
+    </style>
+
+    <script>
+        // ── wire:navigate loader ──────────────────────────────────────────────
+        const loader = document.getElementById('pwa-loader');
+
+        document.addEventListener('livewire:navigating', () => {
+            if (loader) loader.style.display = 'flex';
+        });
+        document.addEventListener('livewire:navigated', () => {
+            if (loader) {
+                setTimeout(() => { loader.style.display = 'none'; }, 150);
+            }
+        });
+
+        // ── Service Worker registration ───────────────────────────────────────
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(reg => console.log('[PWA] SW registered:', reg.scope))
+                    .catch(err => console.warn('[PWA] SW error:', err));
+            });
+        }
+    </script>
 </body>
 </html>

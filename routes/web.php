@@ -15,6 +15,29 @@ use App\Livewire\Workers\WorkerView;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// ── PWA ───────────────────────────────────────────────────────────────────────
+Route::get('/manifest.json', function () {
+    $setting = \App\Models\Setting::first();
+    $iconUrl = $setting && $setting->logo_path
+        ? asset($setting->logo_path)
+        : asset('favicon.ico');
+
+    return response()->json([
+        'name'             => $setting->company_name ?? 'FHTS System',
+        'short_name'       => 'FHTS',
+        'description'      => 'Field & HR Tracking System',
+        'start_url'        => '/projects',
+        'display'          => 'standalone',
+        'background_color' => '#0f255a',
+        'theme_color'      => '#0f255a',
+        'orientation'      => 'portrait-primary',
+        'icons'            => [
+            ['src' => $iconUrl, 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
+            ['src' => $iconUrl, 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
+        ],
+    ])->header('Content-Type', 'application/manifest+json');
+})->name('pwa.manifest');
+
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 
