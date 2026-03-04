@@ -244,7 +244,7 @@
     </aside>
 
     {{-- ══ MAIN CONTENT ══ --}}
-    <main class="pt-14 md:pt-3 px-4 md:px-7 py-6 min-h-screen">
+    <main class="pt-[4.5rem] md:pt-3 px-4 md:px-7 py-6 min-h-screen">
         {{ $slot }}
     </main>
 

@@ -1,55 +1,57 @@
 <div class="space-y-5">
 
-    {{-- Header + Filters --}}
-    <div class="space-y-2">
+    {{-- ══ Header + All Filters in one flex-wrap bar ══ --}}
+    <div class="flex flex-wrap items-center gap-2">
 
-        {{-- Row 1: Title + Project dropdown (side by side on all screens) --}}
-        <div class="flex items-center gap-2">
-            <h2 class="text-2xl font-bold text-gray-800 whitespace-nowrap">Attendance</h2>
-            {{-- Project dropdown — sits beside the title --}}
-            <select wire:model.live="project_id"
-                    class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500
-                           text-sm p-2 border max-w-[140px] sm:max-w-[220px] min-w-0 truncate">
-                @foreach($projects as $p)
-                    <option value="{{ $p->id }}">{{ $p->name }}</option>
-                @endforeach
-            </select>
-        </div>
+        {{-- Title badge --}}
+        <span class="text-base font-bold text-gray-800 whitespace-nowrap mr-1">Attendance</span>
 
-        {{-- Row 2: Month / Year / Trade / Worker filter --}}
-        <div class="flex flex-wrap gap-2 items-center">
-            {{-- Month / Year --}}
-            <select wire:model.live="month" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 text-sm p-2 border">
-                @for($m=1; $m<=12; $m++)
-                    <option value="{{ $m }}">{{ date('M', mktime(0,0,0,$m,1)) }}</option>
-                @endfor
-            </select>
-            <select wire:model.live="year" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 text-sm p-2 border">
-                @for($y=date('Y')-2; $y<=date('Y')+1; $y++)
-                    <option value="{{ $y }}">{{ $y }}</option>
-                @endfor
-            </select>
+        {{-- Project --}}
+        <select wire:model.live="project_id"
+                class="rounded-md border-gray-300 shadow-sm focus:border-blue-500
+                       text-sm p-1.5 border max-w-[130px] sm:max-w-[200px] min-w-0 truncate">
+            @foreach($projects as $p)
+                <option value="{{ $p->id }}">{{ $p->name }}</option>
+            @endforeach
+        </select>
 
-            {{-- Trade / Category filter — compact --}}
-            <select wire:model.live="tradeFilter"
-                    class="rounded-md border-orange-300 shadow-sm focus:border-orange-500 text-sm p-2 border
-                           bg-orange-50 text-orange-700 max-w-[110px] truncate">
-                <option value="">🔧 All</option>
-                @foreach($trades as $t)
-                    <option value="{{ $t }}">{{ $t }}</option>
-                @endforeach
-            </select>
+        {{-- Month --}}
+        <select wire:model.live="month"
+                class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 text-sm p-1.5 border">
+            @for($m=1; $m<=12; $m++)
+                <option value="{{ $m }}">{{ date('M', mktime(0,0,0,$m,1)) }}</option>
+            @endfor
+        </select>
 
-            {{-- Worker Filter --}}
-            <select wire:model.live="workerFilter" class="rounded-md border-blue-300 shadow-sm focus:border-blue-500 text-sm p-2 border bg-blue-50 text-blue-700">
-                <option value="all">👷 All Workers</option>
-                @foreach($allWorkers as $w)
-                    <option value="{{ $w->id }}">{{ $w->name }}</option>
-                @endforeach
-            </select>
+        {{-- Year --}}
+        <select wire:model.live="year"
+                class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 text-sm p-1.5 border">
+            @for($y=date('Y')-2; $y<=date('Y')+1; $y++)
+                <option value="{{ $y }}">{{ $y }}</option>
+            @endfor
+        </select>
 
-            <p class="text-xs text-gray-400">Auto-saves on change</p>
-        </div>
+        {{-- Trade filter --}}
+        <select wire:model.live="tradeFilter"
+                class="rounded-md border-orange-300 shadow-sm focus:border-orange-500
+                       text-sm p-1.5 border bg-orange-50 text-orange-700 max-w-[100px] truncate">
+            <option value="">🔧 All</option>
+            @foreach($trades as $t)
+                <option value="{{ $t }}">{{ $t }}</option>
+            @endforeach
+        </select>
+
+        {{-- Worker filter --}}
+        <select wire:model.live="workerFilter"
+                class="rounded-md border-blue-300 shadow-sm focus:border-blue-500
+                       text-sm p-1.5 border bg-blue-50 text-blue-700 max-w-[120px] sm:max-w-none truncate">
+            <option value="all">👷 All</option>
+            @foreach($allWorkers as $w)
+                <option value="{{ $w->id }}">{{ $w->name }}</option>
+            @endforeach
+        </select>
+
+        <span class="text-xs text-gray-300 hidden sm:inline">• Auto-saves</span>
     </div>
 
     @if(!$project_id)
