@@ -26,10 +26,10 @@ Route::get('/manifest.json', function () {
         'name'             => $setting->company_name ?? 'FHTS System',
         'short_name'       => 'FHTS',
         'description'      => 'Field & HR Tracking System',
-        'start_url'        => '/projects',
+        'start_url'        => '/reports/profit-loss',
         'display'          => 'standalone',
-        'background_color' => '#0f255a',
-        'theme_color'      => '#0f255a',
+        'background_color' => '#b7c7ebff',
+        'theme_color'      => '#83bddfff',
         'orientation'      => 'portrait-primary',
         'icons'            => [
             ['src' => $iconUrl, 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
@@ -51,7 +51,7 @@ Route::post('/logout', function () {
 // ── Authenticated Routes ───────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
 
-    Route::get('/', fn() => redirect('/projects'));
+    Route::get('/', fn() => redirect('/reports/profit-loss'));
 
     // Core modules
     Route::get('/projects',           ProjectManager::class);

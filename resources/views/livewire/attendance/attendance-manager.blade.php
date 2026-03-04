@@ -1,20 +1,23 @@
 <div class="space-y-5">
 
     {{-- Header + Filters --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-800">Attendance Tracker</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Values save automatically on change</p>
-        </div>
+    <div class="space-y-2">
 
-        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-            {{-- Project --}}
-            <select wire:model.live="project_id" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2 border flex-1 sm:flex-none">
+        {{-- Row 1: Title + Project dropdown (side by side on all screens) --}}
+        <div class="flex items-center gap-2">
+            <h2 class="text-2xl font-bold text-gray-800 whitespace-nowrap">Attendance</h2>
+            {{-- Project dropdown — sits beside the title --}}
+            <select wire:model.live="project_id"
+                    class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500
+                           text-sm p-2 border max-w-[140px] sm:max-w-[220px] min-w-0 truncate">
                 @foreach($projects as $p)
                     <option value="{{ $p->id }}">{{ $p->name }}</option>
                 @endforeach
             </select>
+        </div>
 
+        {{-- Row 2: Month / Year / Worker filter --}}
+        <div class="flex flex-wrap gap-2 items-center">
             {{-- Month / Year --}}
             <select wire:model.live="month" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 text-sm p-2 border">
                 @for($m=1; $m<=12; $m++)
@@ -34,6 +37,8 @@
                     <option value="{{ $w->id }}">{{ $w->name }}</option>
                 @endforeach
             </select>
+
+            <p class="text-xs text-gray-400">Auto-saves on change</p>
         </div>
     </div>
 

@@ -76,7 +76,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
-                <a href="/projects" wire:navigate class="flex items-center gap-2">
+                <a href="/reports/profit-loss" wire:navigate class="flex items-center gap-2">
                     @if(isset($branding) && $branding->logo_path)
                         <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="h-7 w-auto object-contain">
                     @else
@@ -116,7 +116,7 @@
 
         {{-- Logo --}}
         <div class="px-5 h-16 flex items-center justify-between border-b border-white/5">
-            <a href="/projects" wire:navigate class="flex items-center gap-2.5">
+            <a href="/reports/profit-loss" wire:navigate class="flex items-center gap-2.5">
                 @if(isset($branding) && $branding->logo_path)
                     <img src="{{ asset($branding->logo_path) }}" alt="Logo"
                          class="h-8 w-auto object-contain bg-white rounded p-0.5">
