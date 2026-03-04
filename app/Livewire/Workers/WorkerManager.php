@@ -28,8 +28,22 @@ class WorkerManager extends Component
             ->orWhere('trade', 'like', '%' . $this->search . '%')
             ->orderBy('name', 'asc')
             ->paginate(15);
-            
-        return view('livewire.workers.worker-manager', ['workers' => $workers]);
+
+        // Distinct trades from DB + default suggestions
+        $tradeSuggestions = Worker::select('trade')
+            ->distinct()
+            ->whereNotNull('trade')
+            ->orderBy('trade')
+            ->pluck('trade')
+            ->merge(['HELPER', 'MASON'])
+            ->unique()
+            ->sort()
+            ->values();
+
+        return view('livewire.workers.worker-manager', [
+            'workers'          => $workers,
+            'tradeSuggestions' => $tradeSuggestions,
+        ]);
     }
 
     public function create()
@@ -59,11 +73,19 @@ class WorkerManager extends Component
 
     public function store()
     {
+        // Normalise: treat blank string as null so multiple workers can have no ID
+        $this->worker_id_number = trim($this->worker_id_number) !== '' ? trim($this->worker_id_number) : null;
+
         $this->validate([
-            'name' => 'required',
-            'trade' => 'required',
-            'internal_pay_rate' => 'required|numeric',
-            'worker_id_number' => 'nullable|unique:workers,worker_id_number,' . $this->worker_id,
+            'name'               => 'required',
+            'trade'              => 'required',
+            'internal_pay_rate'  => 'required|numeric',
+            'worker_id_number'   => [
+                'nullable',
+                $this->worker_id_number
+                    ? 'unique:workers,worker_id_number,' . $this->worker_id
+                    : '',
+            ],
         ]);
 
         $worker = Worker::find($this->worker_id);
@@ -77,17 +99,17 @@ class WorkerManager extends Component
                 ]);
             }
             $worker->update([
-                'name' => $this->name,
-                'worker_id_number' => $this->worker_id_number,
-                'trade' => $this->trade,
-                'internal_pay_rate' => $this->internal_pay_rate,
+                'name'               => $this->name,
+                'worker_id_number'   => $this->worker_id_number ?: null,
+                'trade'              => $this->trade,
+                'internal_pay_rate'  => $this->internal_pay_rate,
             ]);
         } else {
             $worker = Worker::create([
-                'name' => $this->name,
-                'worker_id_number' => $this->worker_id_number,
-                'trade' => $this->trade,
-                'internal_pay_rate' => $this->internal_pay_rate,
+                'name'               => $this->name,
+                'worker_id_number'   => $this->worker_id_number ?: null,
+                'trade'              => $this->trade,
+                'internal_pay_rate'  => $this->internal_pay_rate,
             ]);
             WorkerRate::create([
                 'worker_id' => $worker->id,
