@@ -16,7 +16,7 @@
             </select>
         </div>
 
-        {{-- Row 2: Month / Year / Worker filter --}}
+        {{-- Row 2: Month / Year / Trade / Worker filter --}}
         <div class="flex flex-wrap gap-2 items-center">
             {{-- Month / Year --}}
             <select wire:model.live="month" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 text-sm p-2 border">
@@ -28,6 +28,16 @@
                 @for($y=date('Y')-2; $y<=date('Y')+1; $y++)
                     <option value="{{ $y }}">{{ $y }}</option>
                 @endfor
+            </select>
+
+            {{-- Trade / Category filter — compact --}}
+            <select wire:model.live="tradeFilter"
+                    class="rounded-md border-orange-300 shadow-sm focus:border-orange-500 text-sm p-2 border
+                           bg-orange-50 text-orange-700 max-w-[110px] truncate">
+                <option value="">🔧 All</option>
+                @foreach($trades as $t)
+                    <option value="{{ $t }}">{{ $t }}</option>
+                @endforeach
             </select>
 
             {{-- Worker Filter --}}

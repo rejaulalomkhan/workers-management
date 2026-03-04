@@ -17,7 +17,8 @@ class AttendanceManager extends Component
     public $month;
     public $year;
     public $workerFilter = 'all';   // 'all' or worker id
-    public $savedCell = null;       // 'workerId.day' — used to flash green checkmark
+    public $tradeFilter  = '';      // '' = all trades
+    public $savedCell = null;
     
     public $projects;
     public $daysInMonth;
@@ -170,15 +171,30 @@ class AttendanceManager extends Component
     public function render()
     {
         $query = Worker::where('is_active', true)->orderBy('name');
+
+        // Filter by individual worker
         if ($this->workerFilter !== 'all') {
             $query->where('id', $this->workerFilter);
         }
-        $workers = $query->get();
+        // Filter by trade/category
+        if ($this->tradeFilter) {
+            $query->where('trade', $this->tradeFilter);
+        }
+
+        $workers    = $query->get();
         $allWorkers = Worker::where('is_active', true)->orderBy('name')->get();
+
+        // Distinct trades for filter dropdown
+        $trades = Worker::where('is_active', true)
+            ->select('trade')->distinct()
+            ->whereNotNull('trade')
+            ->orderBy('trade')
+            ->pluck('trade');
 
         return view('livewire.attendance.attendance-manager', [
             'workers'    => $workers,
             'allWorkers' => $allWorkers,
+            'trades'     => $trades,
         ]);
     }
 }
