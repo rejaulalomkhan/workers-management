@@ -1,9 +1,41 @@
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 class="text-2xl font-bold text-gray-800">Workers</h2>
+        <div>
+            <!-- <h2 class="text-2xl font-bold text-gray-800 mb-2">Workers</h2> -->
+            {{-- Trade stat badges --}}
+            <div class="flex flex-wrap gap-2">
+                {{-- Total (reset filter) --}}
+                <button wire:click="resetTradeFilter"
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition
+                               {{ $tradeFilter === '' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100' }}">
+                    All Workers
+                    <span class="{{ $tradeFilter === '' ? 'bg-white/30 text-white' : 'bg-slate-100 text-slate-700' }} rounded-full px-1.5 py-0.5 text-[10px] font-bold">
+                        {{ $totalWorkers }}
+                    </span> 
+                </button>
+
+                {{-- Per-trade badges --}}
+                @foreach($tradeStats as $ts)
+                <button wire:click="filterByTrade('{{ $ts->trade }}')"
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition
+                               {{ $tradeFilter === $ts->trade
+                                   ? 'bg-blue-600 text-white border-blue-600'
+                                   : 'bg-white text-slate-600 border-slate-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700' }}">
+                    {{ $ts->trade }}
+                    <span class="{{ $tradeFilter === $ts->trade ? 'bg-white/30 text-white' : 'bg-blue-50 text-blue-700' }} rounded-full px-1.5 py-0.5 text-[10px] font-bold">
+                        {{ $ts->total }}
+                    </span>
+                </button>
+                @endforeach
+            </div>
+        </div>
+
         <div class="flex w-full sm:w-auto gap-2">
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search workers..." class="w-full sm:w-64 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-            <button wire:click="create" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow whitespace-nowrap">
+            <input type="text" wire:model.live.debounce.300ms="search"
+                   placeholder="Search workers..."
+                   class="w-full sm:w-64 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+            <button wire:click="create"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow whitespace-nowrap">
                 Add Worker
             </button>
         </div>
