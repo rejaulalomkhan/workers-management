@@ -50,13 +50,23 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         @foreach($workers as $worker)
             <div class="bg-white rounded-lg shadow border border-gray-100 flex flex-col hover:shadow-md transition">
-                <a href="/workers/{{ $worker->id }}" class="p-4 flex-1 cursor-pointer block">
+                <a href="/workers/{{ $worker->id }}" wire:navigate class="p-4 flex-1 cursor-pointer block group">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 hover:text-blue-600 transition">{{ $worker->name }}</h3>
-                            <p class="text-xs text-gray-500">{{ $worker->worker_id_number ?? 'No ID' }}</p>
+                        <div class="min-w-0 flex-1">
+                            {{-- Sequential # + name --}}
+                            <div class="flex items-baseline gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+                                    #{{ $loop->iteration }}
+                                </span>
+                                <h3 class="text-base font-bold text-gray-900 group-hover:text-blue-600 group-hover:underline transition leading-tight">
+                                    {{ $worker->name }}
+                                </h3>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-0.5">
+                                {{ $worker->worker_id_number ? 'ID: '.$worker->worker_id_number : '' }}
+                            </p>
                         </div>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 ml-2 shrink-0">
                             {{ $worker->trade }}
                         </span>
                     </div>

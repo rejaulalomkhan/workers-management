@@ -83,19 +83,28 @@
 
     <!-- Filters -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Select Project</label>
-                <select wire:model.live="projectId" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3">
-                    <option value="">All Projects / Overall</option>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Project</label>
+                <select wire:model.live="projectId" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3 text-sm">
+                    <option value="">All Projects</option>
                     @foreach($projects as $p)
                         <option value="{{ $p->id }}">{{ $p->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Trade / Category</label>
+                <select wire:model.live="tradeFilter" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3 text-sm">
+                    <option value="">All Trades</option>
+                    @foreach($trades as $t)
+                        <option value="{{ $t }}">{{ $t }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Month</label>
-                <select wire:model.live="filterMonth" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3">
+                <select wire:model.live="filterMonth" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3 text-sm">
                     @for($i=1; $i<=12; $i++)
                         <option value="{{ $i }}">{{ date('F', mktime(0,0,0,$i, 1)) }}</option>
                     @endfor
@@ -103,14 +112,32 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Year</label>
-                <select wire:model.live="filterYear" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3">
+                <select wire:model.live="filterYear" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm py-2 px-3 text-sm">
                     @for($y=date('Y')-2; $y<=date('Y')+1; $y++)
                         <option value="{{ $y }}">{{ $y }}</option>
                     @endfor
                 </select>
             </div>
         </div>
+        {{-- Active filters summary --}}
+        @if($tradeFilter || $projectId)
+        <div class="mt-3 flex flex-wrap gap-2">
+            @if($tradeFilter)
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-semibold rounded-full">
+                🔧 {{ $tradeFilter }}
+                <button wire:click="$set('tradeFilter', '')" class="hover:text-orange-900 ml-0.5">✕</button>
+            </span>
+            @endif
+            @if($projectId)
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold rounded-full">
+                🏗️ {{ $projects->firstWhere('id', $projectId)?->name }}
+                <button wire:click="$set('projectId', '')" class="hover:text-blue-900 ml-0.5">✕</button>
+            </span>
+            @endif
+        </div>
+        @endif
     </div>
+
 
     <!-- Report Table -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">

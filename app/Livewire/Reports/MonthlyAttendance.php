@@ -12,9 +12,10 @@ class MonthlyAttendance extends Component
 {
     public $filterMonth;
     public $filterYear;
-    public $projectId = '';
+    public $projectId  = '';
+    public $tradeFilter = '';   // '' = all trades
 
-    // PDF date range (used when generating PDF)
+    // PDF date range
     public $pdfFromDate;
     public $pdfToDate;
 
@@ -53,6 +54,10 @@ class MonthlyAttendance extends Component
                 $q->where('project_id', $this->projectId)
                   ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
             });
+        }
+        // Filter by trade/category
+        if ($this->tradeFilter) {
+            $query->where('trade', $this->tradeFilter);
         }
 
         $workers = $query->orderBy('name')->get();
@@ -114,8 +119,10 @@ class MonthlyAttendance extends Component
         $toLabel   = Carbon::parse($to)->format('d.m.Y');
         $dateLabel = $fromLabel . ' – ' . $toLabel;
 
+        $tradeLabel = $this->tradeFilter ? ' [' . $this->tradeFilter . ']' : '';
         $pdfName = 'Attendance_' . Carbon::parse($from)->format('d-m-Y')
-                    . '_to_' . Carbon::parse($to)->format('d-m-Y') . '.pdf';
+                    . '_to_' . Carbon::parse($to)->format('d-m-Y')
+                    . ($this->tradeFilter ? '_' . str_replace(' ', '_', $this->tradeFilter) : '') . '.pdf';
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.monthly-attendance', [
             'reportData'  => $data['reportData'],
@@ -126,7 +133,7 @@ class MonthlyAttendance extends Component
             'filterMonth' => $this->filterMonth,
             'filterYear'  => $this->filterYear,
             'project'     => $project,
-            'dateLabel'   => $dateLabel,
+            'dateLabel'   => $dateLabel . $tradeLabel,
         ])->setPaper('a4', 'landscape');
 
         return response()->streamDownload(function () use ($pdf) {
@@ -139,8 +146,16 @@ class MonthlyAttendance extends Component
         $projects = Project::orderBy('name')->get();
         $data     = $this->getReportData();
 
+        // All distinct trades for filter dropdown
+        $trades = Worker::select('trade')
+            ->distinct()
+            ->whereNotNull('trade')
+            ->orderBy('trade')
+            ->pluck('trade');
+
         return view('livewire.reports.monthly-attendance', [
             'projects'    => $projects,
+            'trades'      => $trades,
             'reportData'  => $data['reportData'],
             'daysInMonth' => $data['daysInMonth'],
             'startDate'   => $data['startDate'],

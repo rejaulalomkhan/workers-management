@@ -17,7 +17,15 @@
         @foreach($projects as $project)
             <div class="bg-white rounded-lg shadow border border-gray-100 flex flex-col hover:shadow-md transition">
                 <div class="p-5 flex-1 block">
-                    <a href="/projects/{{ $project->id }}" class="text-lg font-bold text-gray-900 mb-1 hover:text-blue-600 transition block relative">{{ $project->name }}<span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></span></a>
+                <a href="/projects/{{ $project->id }}" wire:navigate
+                   class="group flex items-start justify-between gap-2 text-gray-900 hover:text-blue-600 transition mb-1">
+                    <span class="text-lg font-bold group-hover:underline leading-snug">{{ $project->name }}</span>
+                    <span class="shrink-0 mt-1 text-gray-300 group-hover:text-blue-500 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </a>
                     <p class="text-sm text-gray-500 mb-4">{{ $project->location ?? 'No location' }}</p>
                     
                     <div class="text-sm mb-4 bg-gray-50 p-3 rounded">
