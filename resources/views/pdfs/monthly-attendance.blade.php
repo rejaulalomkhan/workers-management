@@ -31,19 +31,20 @@
     <div class="header">
         <div class="comp-name">{{ $settings->company_name ?? 'FHTS Software' }}</div>
         <div class="report-title">
-            Monthly Attendance Report - {{ date('F Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }}
+           DATE: {{ date('F Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }}
         </div>
-        <div class="meta">
+        <!-- <div class="meta">
             Project: {{ $project ? $project->name : 'All Projects' }} | 
             Generated on: {{ \Carbon\Carbon::now()->format('d M Y, h:i A') }}
-        </div>
+        </div> -->
     </div>
 
     <table>
         <thead>
             <tr>
                 <th class="sn-col">SN</th>
-                <th class="name-col">Worker Name</th>
+                <th class="sn-col">ID No.</th>
+                <th class="name-col">Name</th>
                 <th class="trade-col">Trade</th>
                 @for($d=1; $d<=$daysInMonth; $d++)
                     <th>{{ $d }}</th>
@@ -55,6 +56,7 @@
             @foreach($reportData as $index => $row)
                 <tr>
                     <td class="sn-col">{{ $index + 1 }}</td>
+                    <td class="sn-col"> </td>
                     <td class="name-col">{{ $row['worker']->name }}</td>
                     <td class="trade-col">{{ $row['worker']->trade }}</td>
                     @foreach($row['days'] as $day => $val)
@@ -67,7 +69,7 @@
             @endforeach
             @if(count($reportData) > 0)
                 <tr>
-                    <td colspan="{{ $daysInMonth + 3 }}" style="text-align: right; font-weight: bold; padding-right: 6px; background-color: #f0f9ff;">TOTAL</td>
+                    <td colspan="{{ $daysInMonth + 4 }}" style="text-align: right; font-weight: bold; padding-right: 6px; background-color: #f0f9ff;">TOTAL</td>
                     <td class="total-col" style="font-size: 9px; font-weight: bold; background-color: #bfdbfe;">{{ collect($reportData)->sum('totalHours') }}</td>
                 </tr>
             @else
