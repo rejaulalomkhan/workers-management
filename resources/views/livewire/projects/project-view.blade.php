@@ -347,13 +347,33 @@
                                 <!-- Summary Row -->
                                 <button @click="expanded = !expanded" class="w-full px-4 py-4 sm:px-6 flex items-center justify-between hover:bg-gray-50 transition focus:outline-none">
                                     <div class="flex items-center gap-3 sm:gap-4">
-                                        <div class="bg-blue-100 text-blue-800 p-2 rounded-lg font-bold flex flex-col items-center justify-center min-w-[3rem] leading-none text-center">
-                                            <span class="text-base sm:text-lg font-black">{{ \Carbon\Carbon::parse($dateString)->format('d') }}</span>
-                                            <span class="text-[9px] sm:text-[10px] uppercase mt-0.5">{{ \Carbon\Carbon::parse($dateString)->format('M') }}</span>
+                                        <div class="flex flex-col items-center justify-center min-w-[3.4rem] bg-white rounded-lg overflow-hidden border border-blue-100 shadow-sm">
+                                            <div class="w-full bg-blue-600 px-1 py-2 flex flex-col items-center">
+                                                <span class="text-base sm:text-lg font-black text-white leading-none">{{ \Carbon\Carbon::parse($dateString)->format('d') }}</span>
+                                                <span class="text-[8px] sm:text-[9px] font-bold text-blue-100 uppercase tracking-widest mt-0.5">{{ \Carbon\Carbon::parse($dateString)->format('M') }}</span>
+                                            </div>
+                                            <div class="w-full bg-blue-50/50 px-1 py-1.5 flex flex-col items-center">
+                                                <span class="text-xs font-black text-blue-700 leading-none">{{ $dateData['total_workers'] }}</span>
+                                                <span class="text-[7px] font-bold text-blue-400 uppercase tracking-tighter">Present</span>
+                                            </div>
                                         </div>
                                         <div class="text-left leading-tight">
                                             <div class="font-bold text-gray-900 border-none text-sm sm:text-base">{{ $dateData['date_display'] }}</div>
-                                            <div class="text-xs text-gray-500 mt-1"><span class="font-bold text-gray-700">{{ $dateData['total_workers'] }}</span> Present</div>
+                                            
+                                            <div class="flex flex-wrap items-center gap-2 mt-2">
+                                                @if($dateData['mason_hours'] > 0)
+                                                    <div class="text-[9px] sm:text-[10px] text-indigo-600 flex items-center gap-1 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">
+                                                        <span class="uppercase font-semibold tracking-wider">Mason:</span>
+                                                        <span class="font-black">{{ $dateData['mason_hours'] }}h</span>
+                                                    </div>
+                                                @endif
+                                                @if($dateData['helper_hours'] > 0)
+                                                    <div class="text-[9px] sm:text-[10px] text-purple-600 flex items-center gap-1 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100">
+                                                        <span class="uppercase font-semibold tracking-wider">Helper:</span>
+                                                        <span class="font-black">{{ $dateData['helper_hours'] }}h</span>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-4 sm:gap-6">

@@ -211,11 +211,21 @@ class ProjectView extends Component
                         'date_display' => $attDate->format('d-m-Y'),
                         'total_workers' => 0,
                         'total_hours' => 0,
+                        'mason_hours' => 0,
+                        'helper_hours' => 0,
                         'workers' => []
                     ];
                 }
                 $dateWiseWorkers[$dateStr]['total_workers'] += 1;
                 $dateWiseWorkers[$dateStr]['total_hours'] += $att->hours;
+
+                $trade = strtoupper(trim($worker->trade ?? ''));
+                if ($trade === 'MASON') {
+                    $dateWiseWorkers[$dateStr]['mason_hours'] += $att->hours;
+                } elseif ($trade === 'HELPER') {
+                    $dateWiseWorkers[$dateStr]['helper_hours'] += $att->hours;
+                }
+
                 $dateWiseWorkers[$dateStr]['workers'][] = [
                     'worker' => $worker,
                     'hours' => $att->hours,
