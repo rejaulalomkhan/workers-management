@@ -115,8 +115,8 @@ class MonthlyAttendance extends Component
         $data    = $this->getReportData($from, $to);
         $project = $this->projectId ? Project::find($this->projectId) : null;
 
-        $fromLabel = Carbon::parse($from)->format('d.m.Y');
-        $toLabel   = Carbon::parse($to)->format('d.m.Y');
+        $fromLabel = Carbon::parse($from)->format('d-m-Y');
+        $toLabel   = Carbon::parse($to)->format('d-m-Y');
         $dateLabel = $fromLabel . ' – ' . $toLabel;
 
         $tradeLabel = $this->tradeFilter ? ' [' . $this->tradeFilter . ']' : '';

@@ -32,15 +32,41 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">
                         📅 From Date
                     </label>
-                    <input type="date" wire:model="pdfFromDate"
-                           class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                    <div class="relative" x-data="{ 
+                        date: @entangle('pdfFromDate'),
+                        get fmt() {
+                            if(!this.date) return '';
+                            let parts = this.date.split('-');
+                            if(parts.length < 3) return this.date;
+                            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                        }
+                    }">
+                        <div class="w-full rounded-lg border border-gray-300 shadow-sm text-sm px-3 py-2 bg-white flex justify-between items-center">
+                            <span x-text="fmt" class="text-gray-700 font-medium"></span>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <input type="date" wire:model="pdfFromDate" x-model="date" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" onclick="this.showPicker()">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">
                         📅 To Date
                     </label>
-                    <input type="date" wire:model="pdfToDate"
-                           class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                    <div class="relative" x-data="{ 
+                        date: @entangle('pdfToDate'),
+                        get fmt() {
+                            if(!this.date) return '';
+                            let parts = this.date.split('-');
+                            if(parts.length < 3) return this.date;
+                            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                        }
+                    }">
+                        <div class="w-full rounded-lg border border-gray-300 shadow-sm text-sm px-3 py-2 bg-white flex justify-between items-center">
+                            <span x-text="fmt" class="text-gray-700 font-medium"></span>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <input type="date" wire:model="pdfToDate" x-model="date" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" onclick="this.showPicker()">
+                    </div>
                 </div>
             </div>
 
@@ -143,7 +169,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
             <h3 class="text-lg font-bold text-gray-800">
-                Attendance for {{ date('F Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }}
+                Attendance for {{ date('m-Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) }}
                 @if($projectId)
                     <span class="text-sm font-normal text-gray-500 ml-2">({{ $projects->firstWhere('id', $projectId)->name ?? '' }})</span>
                 @endif

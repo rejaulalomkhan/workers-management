@@ -74,7 +74,7 @@ class SalaryReport extends Component
     public function exportPdf()
     {
         $setting = Setting::first();
-        $dateLabel = Carbon::createFromDate($this->year, $this->month, 1)->format('F Y');
+        $dateLabel = Carbon::createFromDate($this->year, $this->month, 1)->format('m-Y');
         $fileName = 'salary_report_' . $this->year . '_' . $this->month . '.pdf';
 
         $pdf = Pdf::loadView('pdfs.salary', [

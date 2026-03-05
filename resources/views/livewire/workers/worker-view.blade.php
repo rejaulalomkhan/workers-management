@@ -139,7 +139,7 @@
                             <tbody class="divide-y divide-gray-100">
                                 @forelse($attendances as $att)
                                     <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-3 text-sm text-gray-900">{{ \Carbon\Carbon::parse($att->date)->format('M d, Y') }}</td>
+                                        <td class="px-6 py-3 text-sm text-gray-900">{{ \Carbon\Carbon::parse($att->date)->format('d-m-Y') }}</td>
                                         <td class="px-6 py-3 text-sm text-gray-600 truncate max-w-[200px]">{{ $att->project->name }}</td>
                                         <td class="px-6 py-3 text-center">
                                             @if(is_numeric($att->hours))
@@ -181,7 +181,21 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date *</label>
-                                <input type="date" wire:model="payment_date" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" required>
+                                <div class="relative" x-data="{ 
+                                    date: @entangle('payment_date'),
+                                    get fmt() {
+                                        if(!this.date) return '';
+                                        let parts = this.date.split('-');
+                                        if(parts.length < 3) return this.date;
+                                        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                                    }
+                                }">
+                                    <div class="w-full rounded-md border border-gray-300 shadow-sm text-sm p-2 bg-white flex justify-between items-center h-[38px]">
+                                        <span x-text="fmt" class="text-gray-700 font-medium"></span>
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <input type="date" wire:model="payment_date" x-model="date" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" onclick="this.showPicker()" required>
+                                </div>
                                 @error('payment_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -216,7 +230,7 @@
                             <tbody class="divide-y divide-gray-100">
                                 @forelse($payments as $payment)
                                     <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d-m-Y') }}</td>
                                         <td class="px-6 py-4 text-sm text-gray-600">{{ $payment->notes ?? '-' }}</td>
                                         <td class="px-6 py-4 text-right font-bold text-green-600">+ {{ number_format($payment->amount, 2) }}</td>
                                         <td class="px-6 py-4 text-center">
@@ -224,7 +238,7 @@
                                                target="_blank"
                                                class="inline-flex items-center gap-1 text-xs px-2.5 py-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium rounded transition">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                                {{ \Carbon\Carbon::parse($payment->payment_date)->format('M Y') }}
+                                                {{ \Carbon\Carbon::parse($payment->payment_date)->format('m-Y') }}
                                             </a>
                                         </td>
                                     </tr>

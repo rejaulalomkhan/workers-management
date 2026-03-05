@@ -122,7 +122,7 @@ class ProjectView extends Component
             }
         }
         
-        session()->flash('message', 'Attendance for ' . Carbon::parse($this->todayDate)->format('M d, Y') . ' recorded successfully.');
+        session()->flash('message', 'Attendance for ' . Carbon::parse($this->todayDate)->format('d-m-Y') . ' recorded successfully.');
         $this->loadTodayAttendances();
     }
     
@@ -194,7 +194,7 @@ class ProjectView extends Component
                 $dateStr = $attDate->format('Y-m-d');
                 if(!isset($dateWiseWorkers[$dateStr])) {
                     $dateWiseWorkers[$dateStr] = [
-                        'date_display' => $attDate->format('d M, Y'),
+                        'date_display' => $attDate->format('d-m-Y'),
                         'total_workers' => 0,
                         'total_hours' => 0,
                         'workers' => []

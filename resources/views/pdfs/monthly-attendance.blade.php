@@ -29,7 +29,7 @@
 
     <div style="text-align: center; border: 1px solid #999; padding: 5px 1px; font-size: 12px; font-weight: bold;">
         {{ $settings->company_name ?? 'FHTS Software' }} &nbsp; &nbsp; &nbsp; 
-        DATE: {{ $dateLabel ?? date('d.m.Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) . '-' . date('d.m.Y', mktime(0,0,0,$filterMonth, date('t', mktime(0,0,0,$filterMonth,1,$filterYear)), $filterYear)) }}
+        DATE: {{ $dateLabel ?? date('d-m-Y', mktime(0,0,0,$filterMonth, 1, $filterYear)) . '-' . date('d-m-Y', mktime(0,0,0,$filterMonth, date('t', mktime(0,0,0,$filterMonth,1,$filterYear)), $filterYear)) }}
     </div>
     <table style="margin-top: -2px;">
         <thead>

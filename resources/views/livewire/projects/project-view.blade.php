@@ -121,7 +121,23 @@
                     <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center sm:flex-row flex-col gap-3">
                         <h3 class="text-lg font-bold text-gray-800 flex items-center flex-wrap gap-2">
                             Daily Attendance 
-                            <input type="date" wire:model.live="todayDate" class="bg-blue-50 border border-blue-200 text-blue-800 text-sm px-3 py-1.5 rounded-md focus:ring-blue-500 focus:border-blue-500 font-bold cursor-pointer transition hover:bg-blue-100">
+                            <div class="relative inline-block" x-data="{ 
+                                date: @entangle('todayDate'),
+                                get fmt() {
+                                    if(!this.date) return '';
+                                    let parts = this.date.split('-');
+                                    if(parts.length < 3) return this.date;
+                                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                                }
+                            }">
+                                <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-800 text-sm px-3 py-1.5 rounded-md font-bold transition hover:bg-blue-100 min-w-[120px]">
+                                    <span x-text="fmt"></span>
+                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <input type="date" wire:model.live="todayDate" x-model="date" 
+                                       class="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                                       onclick="this.showPicker()">
+                            </div>
                         </h3>
                         
                         <div class="flex gap-2">
