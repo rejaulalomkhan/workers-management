@@ -88,6 +88,79 @@
         </div>
     </div>
 
+    {{-- Trade Category Summary (NEW TOP SECTION) --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-4 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h3 class="font-bold text-gray-800 flex items-center gap-2 text-lg">
+                    <span class="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </span>
+                    ট্রেড ক্যাটাগরি অনুযায়ী রিপোর্ট
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">সব ক্যাটাগরির রিয়েল-টাইম পারফরম্যান্স ওভারভিউ</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">সময়কাল:</span>
+                <select wire:model.live="tradePeriod" class="rounded-lg border-gray-300 shadow-sm focus:border-blue-500 text-sm py-1.5 pl-3 pr-8 border bg-white font-medium text-gray-700">
+                    <option value="today">আজ</option>
+                    <option value="yesterday">গতকাল</option>
+                    <option value="this_week">এই সপ্তাহ</option>
+                    <option value="this_month">এই মাস</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="p-4 lg:p-6">
+            @if(count($tradeSummary) > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    @foreach($tradeSummary as $row)
+                    @php $isPos = $row['profit'] >= 0; @endphp
+                    <div class="relative group bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:border-blue-200">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="font-bold text-gray-800 truncate mr-2">{{ $row['name'] }}</span>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase shrink-0 {{ $row['margin'] >= 15 ? 'bg-green-100 text-green-700' : ($row['margin'] >= 5 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-600') }}">
+                                {{ $row['margin'] }}%
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-y-2 text-xs">
+                            <div class="flex flex-col">
+                                <span class="text-gray-400 font-medium">Revenue</span>
+                                <span class="text-blue-600 font-bold leading-none mt-1">{{ number_format($row['revenue'], 0) }}</span>
+                            </div>
+                            <div class="flex flex-col text-right">
+                                <span class="text-gray-400 font-medium">Cost</span>
+                                <span class="text-orange-500 font-bold leading-none mt-1">{{ number_format($row['cost'], 0) }}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-gray-400 font-medium">Profit</span>
+                                <span class="{{ $isPos ? 'text-green-600' : 'text-red-500' }} font-bold leading-none mt-1">{{ number_format($row['profit'], 0) }}</span>
+                            </div>
+                            <div class="flex flex-col text-right">
+                                <span class="text-gray-400 font-medium">Hours</span>
+                                <span class="text-gray-700 font-bold leading-none mt-1">{{ number_format($row['hours'], 1) }}h</span>
+                            </div>
+                        </div>
+                        {{-- Mini progress bar --}}
+                        <div class="mt-3 w-full bg-gray-50 rounded-full h-1 overflow-hidden">
+                            <div class="bg-blue-500 h-full rounded-full transition-all duration-500" 
+                                 style="width: {{ $row['margin'] > 0 ? min(100, $row['margin']) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="flex flex-col items-center justify-center py-10 px-4 text-center">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                        <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                    </div>
+                    <p class="text-gray-400 font-medium">No results for "{{ ucfirst(str_replace('_', ' ', $tradePeriod)) }}"</p>
+                    <p class="text-xs text-gray-300 mt-1">Select a different period to see trade category summaries.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
     {{-- Summary Cards --}}
     @if($summaryData)
     @php
@@ -124,20 +197,26 @@
     @endif
 
     {{-- Tab Navigation --}}
-    <div class="bg-white rounded-xl shadow border border-gray-100">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="border-b border-gray-200">
-            <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none;">
-                <nav class="flex -mb-px min-w-max">
+            <div class="overflow-x-auto flex no-scrollbar" style="-webkit-overflow-scrolling: touch;">
+                <nav class="flex flex-nowrap min-w-full">
                     @foreach(['summary' => '📊 Summary', 'project' => '🏗️ By Project', 'worker' => '👷 By Worker', 'category' => '🔧 By Trade'] as $tab => $label)
                     <button wire:click="$set('activeTab', '{{ $tab }}')"
-                        class="flex-shrink-0 whitespace-nowrap py-3 px-5 border-b-2 text-sm font-medium transition-colors
-                            {{ $activeTab === $tab ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        class="flex-shrink-0 whitespace-nowrap py-4 px-6 border-b-2 text-sm font-bold transition-all duration-200
+                            {{ $activeTab === $tab ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50' }}">
                         {{ $label }}
                     </button>
                     @endforeach
                 </nav>
             </div>
         </div>
+
+        <style>
+            /* Hide scrollbar but keep functionality */
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        </style>
 
         <div class="p-5">
 

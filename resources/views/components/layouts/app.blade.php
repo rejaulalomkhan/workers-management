@@ -64,8 +64,30 @@
         #nprogress .bar { background: #60a5fa; height: 2px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased pb-16 md:pb-0 md:pl-60"
-      x-data="{ sidebarOpen: false }">
+    <body class="bg-slate-50 text-slate-900 font-sans antialiased pb-16 md:pb-0 md:pl-60"
+          x-data="{ 
+            sidebarOpen: false, 
+            showInstall: false,
+            showManualInstructions: false,
+            isIOS: /iPhone|iPad|iPod/.test(window.navigator.userAgent) && !window.MSStream,
+            isChrome: /Chrome/.test(window.navigator.userAgent) || /CriOS/.test(window.navigator.userAgent),
+            isStandalone: window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches,
+            installPWA() {
+                if (window.deferredPrompt) {
+                    window.deferredPrompt.prompt();
+                    window.deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            this.showInstall = false;
+                        }
+                        window.deferredPrompt = null;
+                    });
+                } else {
+                    this.showManualInstructions = true;
+                }
+            }
+          }"
+          x-init="if((isIOS || isChrome) && !isStandalone) showInstall = true"
+          @pwa-install-ready.window="showInstall = true">
 
     {{-- ══ MOBILE TOP BAR ══ --}}
     <header class="md:hidden fixed top-0 w-full z-30 bg-white border-b border-slate-200 shadow-sm">
@@ -85,17 +107,28 @@
                     @endif
                 </a>
             </div>
-            <form method="POST" action="/logout">
-                @csrf
-                <button type="submit"
-                        class="text-xs font-semibold flex items-center gap-1.5 text-slate-500 hover:text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-50 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            <div class="flex items-center gap-2">
+                {{-- PWA Install Button (Mobile Only) --}}
+                <button x-show="showInstall" @click="installPWA()" 
+                        class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold shadow-sm transition hover:bg-blue-700 whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
-                    Logout
+                    <span x-text="showInstall ? 'Install' : 'Install App'"></span>
                 </button>
-            </form>
+
+                <form method="POST" action="/logout">
+                    @csrf
+                    <button type="submit"
+                            class="text-xs font-semibold flex items-center gap-1.5 text-slate-500 hover:text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-50 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Logout
+                    </button>
+                </form>
+            </div>
         </div>
     </header>
 
@@ -328,6 +361,63 @@
         @keyframes load-bar   { 0%{ width:0% } 60%{ width:85% } 100%{ width:100% } }
     </style>
 
+    {{-- PWA Installation Instructions Modal (Universal) --}}
+    <div x-show="showManualInstructions" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
+         style="display: none;">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+            <div class="mb-4 flex justify-center">
+                <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-slate-800 mb-2" x-text="isIOS ? 'Install on iPhone' : 'Install on Chrome'"></h3>
+            <p class="text-slate-600 text-sm mb-6">অ্যাপটি ইনস্টল করতে নিচের ধাপগুলো অনুসরণ করুন:</p>
+            
+            {{-- iOS/Safari Instructions --}}
+            <template x-if="isIOS">
+                <div class="space-y-4 text-left bg-slate-50 p-4 rounded-xl mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center shrink-0">১</div>
+                        <p class="text-slate-700 text-xs leading-relaxed">সাফারি ব্রাউজারের নিচে থাকা <span class="font-bold underline">Share</span> আইকনে ক্লিক করুন।</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center shrink-0">২</div>
+                        <p class="text-slate-700 text-xs leading-relaxed">নিচের দিকে স্ক্রোল করে <span class="font-bold underline">Add to Home Screen</span> অপশনটি বেছে নিন।</p>
+                    </div>
+                </div>
+            </template>
+
+            {{-- Android/Chrome Instructions --}}
+            <template x-if="!isIOS && isChrome">
+                <div class="space-y-4 text-left bg-slate-50 p-4 rounded-xl mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center shrink-0">১</div>
+                        <p class="text-slate-700 text-xs leading-relaxed">ব্রাউজারের উপরে ডান পাশে থাকা <span class="font-bold underline">তিনটি ডট (⋮)</span> বা <span class="font-bold underline">শেয়ার</span> আইকনে ক্লিক করুন।</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center shrink-0">২</div>
+                        <p class="text-slate-700 text-xs leading-relaxed">মেনু থেকে <span class="font-bold underline">Install App</span> অথবা <span class="font-bold underline">Add to Home screen</span> অপশনটি বেছে নিন।</p>
+                    </div>
+                </div>
+            </template>
+
+            <button @click="showManualInstructions = false" 
+                    class="w-full py-3 bg-slate-800 text-white rounded-xl font-bold transition hover:bg-slate-700">
+                বুঝতে পেরেছি
+            </button>
+        </div>
+    </div>
+
     <script>
         // ── wire:navigate loader ──────────────────────────────────────────────
         const loader = document.getElementById('pwa-loader');
@@ -349,6 +439,21 @@
                     .catch(err => console.warn('[PWA] SW error:', err));
             });
         }
+        // ── PWA Installation logic ───────────────────────────────────────────
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            window.deferredPrompt = e;
+            // Notify Alpine that the install button can be shown
+            window.dispatchEvent(new CustomEvent('pwa-install-ready'));
+        });
+
+        window.addEventListener('appinstalled', (evt) => {
+            // Hide the app-provided install promotion
+            window.dispatchEvent(new CustomEvent('pwa-install-ready', { detail: false }));
+            console.log('FHTS App was installed');
+        });
     </script>
 </body>
 </html>

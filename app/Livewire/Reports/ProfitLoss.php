@@ -15,12 +15,15 @@ class ProfitLoss extends Component
     public $year;
     public $selectedProject = 'all';
     public $activeTab = 'summary'; // summary | project | worker | category
-
     public $projects = [];
     public $summaryData = [];
     public $projectData = [];
     public $workerData = [];
     public $categoryData = [];
+
+    // New top section properties
+    public $tradePeriod = 'today';
+    public $tradeSummary = [];
 
     public function mount()
     {
@@ -28,13 +31,86 @@ class ProfitLoss extends Component
         $this->year  = Carbon::now()->year;
         $this->projects = Project::orderBy('name')->get();
         $this->generateReport();
+        $this->calculateTradeSummary();
     }
 
     public function updated($property)
     {
-        if (in_array($property, ['month', 'year', 'selectedProject', 'activeTab'])) {
+        if (in_array($property, ['month', 'year', 'selectedProject'])) {
             $this->generateReport();
         }
+        if ($property === 'tradePeriod') {
+            $this->calculateTradeSummary();
+        }
+    }
+
+    public function calculateTradeSummary()
+    {
+        $startDate = null;
+        $endDate = Carbon::now();
+
+        switch ($this->tradePeriod) {
+            case 'today':
+                $startDate = Carbon::now()->startOfDay();
+                $endDate = Carbon::now()->endOfDay();
+                break;
+            case 'yesterday':
+                $startDate = Carbon::yesterday()->startOfDay();
+                $endDate = Carbon::yesterday()->endOfDay();
+                break;
+            case 'this_week':
+                $startDate = Carbon::now()->startOfWeek();
+                break;
+            case 'this_month':
+                $startDate = Carbon::now()->startOfMonth();
+                break;
+        }
+
+        $attendances = Attendance::with(['worker', 'project.categories'])
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get();
+
+        $categoryMap = [];
+
+        foreach ($attendances as $att) {
+            if (!is_numeric($att->hours) || $att->hours <= 0) continue;
+            
+            $worker = $att->worker;
+            if (!$worker) continue;
+
+            $trade = $worker->trade ?: 'Uncategorized';
+            $hours = (float) $att->hours;
+            $project = $att->project;
+
+            $billingRate = 0;
+            if ($project) {
+                $cat = $project->categories->first(fn($c) => strtolower(trim($c->name)) === strtolower(trim($trade)));
+                $billingRate = $cat ? (float) $cat->billing_rate : 0;
+            }
+
+            $payRate = (float) ($worker->internal_pay_rate ?? 0);
+            $revenue = $billingRate * $hours;
+            $cost    = $payRate * $hours;
+
+            if (!isset($categoryMap[$trade])) {
+                $categoryMap[$trade] = ['name' => $trade, 'revenue' => 0, 'cost' => 0, 'hours' => 0];
+            }
+            $categoryMap[$trade]['revenue'] += $revenue;
+            $categoryMap[$trade]['cost']    += $cost;
+            $categoryMap[$trade]['hours']   += $hours;
+        }
+
+        $this->tradeSummary = collect($categoryMap)
+            ->map(function($c) {
+                $p = $c['revenue'] - $c['cost'];
+                return array_merge($c, [
+                    'profit' => $p,
+                    'margin' => $c['revenue'] > 0 ? round(($p / $c['revenue']) * 100, 1) : 0
+                ]);
+            })
+            ->sortByDesc('revenue')
+            ->values()
+            ->toArray();
     }
 
     public function generateReport()
