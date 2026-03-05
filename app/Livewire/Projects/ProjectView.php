@@ -156,6 +156,11 @@ class ProjectView extends Component
         $monthHours = 0;
         $monthReceivable = 0;
         
+        $masonHours = 0;
+        $masonAmount = 0;
+        $helperHours = 0;
+        $helperAmount = 0;
+        
         $currentMonthWorkers = [];
         $dateWiseWorkers = [];
         $uniqueWorkers = [];
@@ -179,6 +184,15 @@ class ProjectView extends Component
             if($attDate->month == $this->filterMonth && $attDate->year == $this->filterYear) {
                 $monthHours += $att->hours;
                 $monthReceivable += ($att->hours * $rate);
+
+                $trade = strtoupper(trim($worker->trade ?? ''));
+                if ($trade === 'MASON') {
+                    $masonHours += $att->hours;
+                    $masonAmount += ($att->hours * $rate);
+                } elseif ($trade === 'HELPER') {
+                    $helperHours += $att->hours;
+                    $helperAmount += ($att->hours * $rate);
+                }
                 
                 if(!isset($currentMonthWorkers[$worker->id])) {
                     $currentMonthWorkers[$worker->id] = [
@@ -223,6 +237,10 @@ class ProjectView extends Component
             'totalReceivable' => $totalReceivable,
             'monthHours' => $monthHours,
             'monthReceivable' => $monthReceivable,
+            'masonHours' => $masonHours,
+            'masonAmount' => $masonAmount,
+            'helperHours' => $helperHours,
+            'helperAmount' => $helperAmount,
             'currentMonthWorkers' => $currentMonthWorkers,
             'dateWiseWorkers' => $dateWiseWorkers,
             'allWorkers' => collect($uniqueWorkers)->values(),

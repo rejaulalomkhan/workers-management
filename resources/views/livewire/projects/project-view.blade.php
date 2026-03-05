@@ -111,6 +111,44 @@
                         <h4 class="text-xl sm:text-2xl font-bold text-blue-600"><span class="text-xs sm:text-sm font-normal text-blue-400">AED</span> {{ number_format($monthReceivable, 2) }}</h4>
                         <p class="text-[10px] sm:text-xs text-gray-400 mt-2">Selected Month</p>
                     </div>
+
+                    <!-- MASON Card -->
+                    <div class="bg-white p-4 sm:p-5 rounded-xl border-t-4 border-indigo-500 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-indigo-50 p-1.5 rounded-lg text-indigo-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                </div>
+                                <p class="text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-tight">MASON Overview</p>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <h4 class="text-xl sm:text-2xl font-black text-indigo-700">{{ number_format($masonHours, 1) }} <span class="text-xs font-normal text-indigo-400">Hours</span></h4>
+                                <div class="flex items-center gap-1.5 mt-1 border-t border-indigo-50 pt-2">
+                                    <span class="text-[10px] text-gray-400 font-bold uppercase">Receivable:</span>
+                                    <span class="text-xs sm:text-sm font-bold text-gray-700"><span class="text-[10px] font-normal text-gray-400">AED</span> {{ number_format($masonAmount, 2) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HELPER Card -->
+                    <div class="bg-white p-4 sm:p-5 rounded-xl border-t-4 border-purple-500 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-purple-50 p-1.5 rounded-lg text-purple-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                </div>
+                                <p class="text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-tight">HELPER Overview</p>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <h4 class="text-xl sm:text-2xl font-black text-purple-700">{{ number_format($helperHours, 1) }} <span class="text-xs font-normal text-purple-400">Hours</span></h4>
+                                <div class="flex items-center gap-1.5 mt-1 border-t border-purple-50 pt-2">
+                                    <span class="text-[10px] text-gray-400 font-bold uppercase">Receivable:</span>
+                                    <span class="text-xs sm:text-sm font-bold text-gray-700"><span class="text-[10px] font-normal text-gray-400">AED</span> {{ number_format($helperAmount, 2) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>

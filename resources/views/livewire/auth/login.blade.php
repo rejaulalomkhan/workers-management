@@ -1,66 +1,113 @@
-<div class="w-full max-w-md bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-10 mx-4 border border-gray-100">
-    <div class="text-center mb-8">
-        @php $branding = \App\Models\Setting::first(); @endphp
-        <div class="flex items-center justify-center gap-3 mb-2">
-            @if($branding && $branding->logo_path)
-                <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="h-10 w-auto object-contain filter drop-shadow-sm">
-            @endif
-            <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500">FHTS Software</h2>
-        </div>
-        <p class="text-gray-500 text-sm font-medium tracking-wide">Enter your credentials to access</p>
+<div class="fixed inset-0 min-h-screen w-full flex items-center justify-center overflow-y-auto bg-slate-50">
+    {{-- Decorative Background Elements (Simple and Premium) --}}
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-blue-500/5 blur-[100px]"></div>
+        <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-indigo-500/5 blur-[100px]"></div>
     </div>
 
-    <form wire:submit="login" class="space-y-6">
-        <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-            <input type="email" wire:model="email" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border !outline-none transition" required autofocus>
-            @error('email') <span class="text-red-500 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
-        </div>
+    {{-- Main Container --}}
+    <div class="relative w-full min-h-screen sm:min-h-0 sm:max-w-[420px] flex flex-col justify-center sm:block">
+        
+        {{-- Card / Branding Section --}}
+        <div class="bg-white/80 backdrop-blur-xl sm:rounded-3xl sm:shadow-[0_20px_50px_rgba(15,37,90,0.08)] sm:border sm:border-white/50 overflow-hidden transition-all duration-300">
+            
+            <div class="p-8 sm:p-10">
+                {{-- Header --}}
+                <div class="text-center mb-10">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white shadow-xl shadow-slate-200/50 mb-6 group transition-transform hover:scale-105 border border-slate-50">
+                        @php $branding = \App\Models\Setting::first(); @endphp
+                        @if($branding && $branding->logo_path)
+                            <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="w-14 h-14 object-contain">
+                        @else
+                            <span class="text-blue-600 font-black text-2xl tracking-tighter">FH</span>
+                        @endif
+                    </div>
+                    <h4 class="text-[13px] sm:text-base font-bold text-slate-800 tracking-tight mb-1 px-1 uppercase leading-tight">
+                        {{ $branding->company_name ?? 'FHTS Software' }}
+                    </h4>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[1px]">Software Login</p>
+                </div>
 
-        <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-            <input type="password" wire:model="password" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border !outline-none transition" required>
-            @error('password') <span class="text-red-500 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
-        </div>
+                {{-- Form --}}
+                <form wire:submit="login" class="space-y-5">
+                    <div class="group">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Email Address</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206"></path></svg>
+                            </span>
+                            <input type="email" wire:model="email" 
+                                   class="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border-transparent rounded-2xl text-slate-800 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm font-medium border" 
+                                   placeholder="name@example.com"
+                                   required autofocus>
+                        </div>
+                        @error('email') <span class="text-rose-500 text-[11px] mt-1.5 block font-bold ml-1 uppercase tracking-wider">{{ $message }}</span> @enderror
+                    </div>
 
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <input id="remember" wire:model="remember" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer">
-                <label for="remember" class="ml-2 block text-sm text-gray-700 cursor-pointer select-none">
-                    Remember me
-                </label>
+                    <div class="group">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Password</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </span>
+                            <input type="password" wire:model="password" 
+                                   class="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border-transparent rounded-2xl text-slate-800 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none text-sm font-medium border" 
+                                   placeholder="••••••••"
+                                   required>
+                        </div>
+                        @error('password') <span class="text-rose-500 text-[11px] mt-1.5 block font-bold ml-1 uppercase tracking-wider">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="flex items-center justify-between py-1">
+                        <label for="remember" class="inline-flex items-center group cursor-pointer">
+                            <input id="remember" wire:model="remember" type="checkbox" 
+                                   class="w-4.5 h-4.5 text-blue-600 bg-slate-50 border-slate-200 rounded-lg focus:ring-blue-500 focus:ring-offset-0 transition cursor-pointer">
+                            <span class="ml-2.5 text-slate-600 text-sm font-semibold select-none group-hover:text-slate-800 transition">প্রবেশের তথ্য মনে রাখুন</span>
+                        </label>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" 
+                                class="relative w-full group overflow-hidden bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-[2px] text-xs shadow-xl shadow-slate-900/10 hover:shadow-slate-900/20 transition-all active:scale-[0.98]">
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            
+                            <span wire:loading.remove wire:target="login" class="relative z-10 flex items-center justify-center gap-2">
+                                Sign In
+                                <svg class="w-4 h-4 translate-x-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </span>
+                            <span wire:loading.inline-flex wire:target="login" class="relative z-10 items-center justify-center">
+                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Please wait...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                {{-- Footer / Credits --}}
+                <div class="mt-12 text-center">
+                    <div class="flex items-center justify-center gap-4 mb-4 opacity-30">
+                        <div class="h-px w-8 bg-slate-400"></div>
+                        <span class="text-[10px] font-black uppercase tracking-[3px] text-slate-500">Developed by</span>
+                        <div class="h-px w-8 bg-slate-400"></div>
+                    </div>
+                    
+                    <a href="https://wa.me/+8801916628339" target="_blank"
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-100 bg-slate-50/50 text-slate-500 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50 transition-all duration-300">
+                        <span class="text-xs font-black tracking-wide">Arman Azij</span>
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <div class="pt-2">
-            <button type="submit" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                <span wire:loading.remove wire:target="login">Sign In</span>
-                <span wire:loading.inline-flex wire:target="login" class="items-center">
-                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Signing in...
-                </span>
-            </button>
-        </div>
-    </form>
-
-    {{-- Developer Credit --}}
-    <div class="mt-8 pt-5 border-t border-gray-100 text-center">
-        <p class="text-[11px] text-gray-400 leading-relaxed">
-            Developed by <span class="text-red-400">♥</span>
-            <a href="https://wa.me/+8801916628339" target="_blank"
-               class="font-semibold text-blue-500 hover:text-blue-700 transition-colors">
-               Arman Azij
+        {{-- Mobile Contact Bar --}}
+        <div class="sm:hidden mt-auto pb-8 pt-4 px-8 text-center">
+            <a href="tel:+8801916628339" class="text-[11px] font-bold text-slate-400 hover:text-slate-600 transition tracking-tighter uppercase whitespace-nowrap">
+                Contact Technical Support: +880 1916-628339
             </a>
-        </p>
-        <a href="https://wa.me/+8801916628339" target="_blank"
-           class="inline-flex items-center gap-1.5 mt-1.5 text-[11px] text-gray-400 hover:text-green-600 transition-colors">
-            <svg class="w-3.5 h-3.5 text-green-500" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            +880 1916-628339
-        </a>
+        </div>
     </div>
 </div>
