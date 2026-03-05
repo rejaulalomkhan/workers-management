@@ -28,6 +28,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Worker</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trade</th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Days Present</th>
@@ -40,6 +41,9 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($reportData as $row)
                         <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-600">
+                                #{{ $row['worker_id'] }}
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $row['name'] }}</div>
                                 <div class="text-xs text-gray-500">{{ $row['worker_id_number'] }}</div>
@@ -83,7 +87,7 @@
                 @if(count($reportData) > 0)
                 <tfoot class="bg-gray-50 font-bold border-t-2 border-gray-300">
                     <tr>
-                        <td colspan="5" class="px-6 py-4 text-right text-sm text-gray-900 uppercase">Grand Total:</td>
+                        <td colspan="6" class="px-6 py-4 text-right text-sm text-gray-900 uppercase">Grand Total:</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-lg text-blue-700">
                             {{ number_format(collect($reportData)->sum('total_pay'), 2) }}
                         </td>

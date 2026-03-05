@@ -32,7 +32,7 @@ class SalaryReport extends Component
     public function generateReport()
     {
         $this->reportData = [];
-        $workers = Worker::orderBy('name')->get();
+        $workers = Worker::get();
         
         foreach ($workers as $worker) {
             $attendances = Attendance::where('worker_id', $worker->id)

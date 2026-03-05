@@ -100,25 +100,26 @@ class ProjectView extends Component
     public function saveTodayAttendance()
     {
         foreach($this->todayAttendances as $worker_id => $val) {
-            $val = trim((string)$val);
+            $val = ($val === null) ? '' : trim((string)$val);
+            
             if($val === '') {
-                $val = 'A';
-            }
-            
-            // Check if worker valid
-            $worker = Worker::find($worker_id);
-            if(!$worker) continue;
-            
-            Attendance::updateOrCreate(
-                [
+                Attendance::where([
                     'worker_id' => $worker_id,
                     'project_id' => $this->project->id,
                     'date' => $this->todayDate,
-                ],
-                [
-                    'hours' => strtoupper(trim((string)$val)),
-                ]
-            );
+                ])->delete();
+            } else {
+                Attendance::updateOrCreate(
+                    [
+                        'worker_id' => $worker_id,
+                        'project_id' => $this->project->id,
+                        'date' => $this->todayDate,
+                    ],
+                    [
+                        'hours' => strtoupper($val),
+                    ]
+                );
+            }
         }
         
         session()->flash('message', 'Attendance for ' . Carbon::parse($this->todayDate)->format('M d, Y') . ' recorded successfully.');
@@ -226,7 +227,7 @@ class ProjectView extends Component
             'dateWiseWorkers' => $dateWiseWorkers,
             'allWorkers' => collect($uniqueWorkers)->values(),
             
-            'todaysWorkersList' => Worker::whereIn('id', array_keys($this->todayAttendances))->orderBy('name')->get()->keyBy('id'),
+            'todaysWorkersList' => Worker::whereIn('id', array_keys($this->todayAttendances))->get()->keyBy('id'),
             'availableWorkersForTodaySelect' => collect($availableWorkersForTodaySelect),
             
             'permanentWorkers' => $permanentWorkers,

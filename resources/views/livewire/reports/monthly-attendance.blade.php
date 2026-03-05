@@ -165,7 +165,7 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($reportData as $index => $row)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-2 py-3 text-xs font-semibold text-gray-600 text-center sticky left-0 bg-white group-hover:bg-gray-50 border-r border-gray-200 z-10">{{ $index + 1 }}</td>
+                            <td class="px-2 py-3 text-xs font-semibold text-gray-600 text-center sticky left-0 bg-white group-hover:bg-gray-50 border-r border-gray-200 z-10">{{ $row['worker']->id }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 sticky left-10 bg-white group-hover:bg-gray-50 border-r border-gray-200 truncate max-w-[12rem] z-10">{{ $row['worker']->name }}</td>
                             <td class="px-4 py-3 text-xs text-gray-500 border-r border-gray-200 text-center">{{ $row['worker']->trade }}</td>
                             @foreach($row['days'] as $day => $val)

@@ -48,7 +48,7 @@
             @foreach($reportData as $index => $row)
                 <tr>
                     <td class="sn-col">{{ $index + 1 }}</td>
-                    <td class="sn-col"> </td>
+                    <td class="sn-col">{{ $row['worker']->id }}</td>
                     <td class="name-col">{{ $row['worker']->name }}</td>
                     <td class="trade-col">{{ $row['worker']->trade }}</td>
                     @foreach($row['days'] as $day => $val)

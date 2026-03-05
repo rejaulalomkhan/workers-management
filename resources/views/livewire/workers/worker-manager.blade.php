@@ -56,7 +56,7 @@
                             {{-- Sequential # + name --}}
                             <div class="flex items-baseline gap-1.5 flex-wrap">
                                 <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
-                                    #{{ $loop->iteration }}
+                                    #{{ $worker->id }}
                                 </span>
                                 <h3 class="text-base font-bold text-gray-900 group-hover:text-blue-600 group-hover:underline transition leading-tight">
                                     {{ $worker->name }}

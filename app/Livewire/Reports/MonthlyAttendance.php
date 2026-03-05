@@ -60,7 +60,7 @@ class MonthlyAttendance extends Component
             $query->where('trade', $this->tradeFilter);
         }
 
-        $workers = $query->orderBy('name')->get();
+        $workers = $query->get();
 
         $attendanceQuery = Attendance::whereIn('worker_id', $workers->pluck('id'))
             ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
@@ -147,7 +147,8 @@ class MonthlyAttendance extends Component
         $data     = $this->getReportData();
 
         // All distinct trades for filter dropdown
-        $trades = Worker::select('trade')
+        $trades = Worker::withoutGlobalScope('orderById')
+            ->select('trade')
             ->distinct()
             ->whereNotNull('trade')
             ->orderBy('trade')

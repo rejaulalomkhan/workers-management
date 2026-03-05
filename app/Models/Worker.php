@@ -9,6 +9,12 @@ class Worker extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected static function booted()
+    {
+        static::addGlobalScope('orderById', function ($builder) {
+            $builder->orderBy('id', 'asc');
+        });
+    }
 
     public function rates()
     {

@@ -52,10 +52,11 @@ class WorkerManager extends Component
             $query->where('trade', $this->tradeFilter);
         }
 
-        $workers = $query->orderBy('name', 'asc')->paginate(15);
+        $workers = $query->paginate(15);
 
         // Trade stats: all distinct trades with counts
-        $tradeStats = Worker::selectRaw('trade, count(*) as total')
+        $tradeStats = Worker::withoutGlobalScope('orderById')
+            ->selectRaw('trade, count(*) as total')
             ->whereNotNull('trade')
             ->groupBy('trade')
             ->orderBy('trade')

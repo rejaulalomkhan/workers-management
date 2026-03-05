@@ -26,12 +26,12 @@ class AttendanceManager extends Component
 
     public function mount()
     {
-        $this->projects = Project::orderBy('name')->get();
+        $this->projects = Project::withoutGlobalScope('orderById')->orderBy('name')->get();
         if ($this->projects->count() > 0) {
             $this->project_id = $this->projects->first()->id;
         }
-        $this->month = Carbon::now()->month;
-        $this->year = Carbon::now()->year;
+        $this->month = (int)Carbon::now()->month;
+        $this->year = (int)Carbon::now()->year;
         
         $this->loadData();
     }
@@ -47,11 +47,14 @@ class AttendanceManager extends Component
     {
         $parts = explode('.', $key);
         if (count($parts) === 2) {
-            $worker_id = $parts[0];
-            $day = $parts[1];
+            $worker_id = (int)$parts[0];
+            $day = (int)$parts[1];
+            
+            // Persist to DB
             $this->saveDay($worker_id, $day, $value);
+            
+            // Trigger feedback
             $this->savedCell = $worker_id . '.' . $day;
-            // Clear the flash indicator after 2 seconds via JS dispatch
             $this->dispatch('cell-saved', cell: $this->savedCell);
         }
     }
@@ -60,21 +63,25 @@ class AttendanceManager extends Component
     {
         if (!$this->project_id || !$this->month || !$this->year) return;
         
-        $date = Carbon::createFromDate($this->year, $this->month, $day)->format('Y-m-d');
+        $hours = ($hours === null) ? '' : trim((string)$hours);
+        $date = Carbon::createFromDate((int)$this->year, (int)$this->month, (int)$day)->format('Y-m-d');
         
-        $hours = trim($hours);
-        if ($hours === '') {
-            $hours = 'A';
-        }
-
-        Attendance::updateOrCreate(
-            [
+        if ($hours === '' || $hours === null) {
+            Attendance::where([
                 'worker_id' => $worker_id,
                 'project_id' => $this->project_id,
                 'date' => $date
-            ],
-            ['hours' => strtoupper($hours)]
-        );
+            ])->delete();
+        } else {
+            Attendance::updateOrCreate(
+                [
+                    'worker_id' => $worker_id,
+                    'project_id' => $this->project_id,
+                    'date' => $date
+                ],
+                ['hours' => strtoupper($hours)]
+            );
+        }
     }
 
     public function fillAllPresent($worker_id, $hours = 8)
@@ -83,8 +90,8 @@ class AttendanceManager extends Component
 
         for ($day = 1; $day <= $this->daysInMonth; $day++) {
             $existing = $this->attendances[$worker_id][$day] ?? '';
-            // Only fill empty cells — don't overwrite existing entries
-            if ($existing === '' || $existing === null) {
+            // Only fill empty cells
+            if ($existing === '' || $existing === null || $existing === '-') {
                 $this->saveDay($worker_id, $day, (string)$hours);
                 $this->attendances[$worker_id][$day] = (string)$hours;
             }
@@ -170,7 +177,7 @@ class AttendanceManager extends Component
 
     public function render()
     {
-        $query = Worker::where('is_active', true)->orderBy('name');
+        $query = Worker::where('is_active', true);
 
         // Filter by individual worker
         if ($this->workerFilter !== 'all') {
@@ -182,10 +189,11 @@ class AttendanceManager extends Component
         }
 
         $workers    = $query->get();
-        $allWorkers = Worker::where('is_active', true)->orderBy('name')->get();
+        $allWorkers = Worker::where('is_active', true)->get();
 
         // Distinct trades for filter dropdown
-        $trades = Worker::where('is_active', true)
+        $trades = Worker::withoutGlobalScope('orderById')
+            ->where('is_active', true)
             ->select('trade')->distinct()
             ->whereNotNull('trade')
             ->orderBy('trade')

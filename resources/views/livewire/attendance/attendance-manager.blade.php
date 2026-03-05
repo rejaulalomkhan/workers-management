@@ -90,16 +90,28 @@
                             wire:target="fillAllPresent({{ $worker->id }}, 8)"
                             class="text-xs px-2.5 py-1 rounded-md bg-green-100 text-green-700 hover:bg-green-200 font-medium transition flex items-center gap-1"
                             title="Fill all empty days with 8 hrs">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            8 hrs
+                            8h
+                        </button>
+                        <button wire:click="fillAllPresent({{ $worker->id }}, 9)"
+                            wire:loading.attr="disabled"
+                            wire:target="fillAllPresent({{ $worker->id }}, 9)"
+                            class="text-xs px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-medium transition flex items-center gap-1"
+                            title="Fill all empty days with 9 hrs">
+                            9h
                         </button>
                         <button wire:click="fillAllPresent({{ $worker->id }}, 10)"
                             wire:loading.attr="disabled"
                             wire:target="fillAllPresent({{ $worker->id }}, 10)"
                             class="text-xs px-2.5 py-1 rounded-md bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium transition flex items-center gap-1"
                             title="Fill all empty days with 10 hrs">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            10 hrs
+                            10h
+                        </button>
+                        <button wire:click="fillAllPresent({{ $worker->id }}, 11)"
+                            wire:loading.attr="disabled"
+                            wire:target="fillAllPresent({{ $worker->id }}, 11)"
+                            class="text-xs px-2.5 py-1 rounded-md bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium transition flex items-center gap-1"
+                            title="Fill all empty days with 11 hrs">
+                            11h
                         </button>
                         <button wire:click="clearWorker({{ $worker->id }})"
                             wire:loading.attr="disabled"

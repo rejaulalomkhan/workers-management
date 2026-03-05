@@ -140,6 +140,7 @@
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="text-gray-400 text-xs uppercase tracking-wider border-b border-gray-100">
+                                        <th class="px-6 py-3 font-medium text-center w-8">ID</th>
                                         <th class="px-6 py-3 font-medium">Worker Name</th>
                                         <th class="px-6 py-3 font-medium">Trade</th>
                                         <th class="px-6 py-3 font-medium text-right">Hours/Status</th>
@@ -148,6 +149,7 @@
                                 <tbody class="divide-y divide-gray-50">
                                     @forelse($todaysWorkersList as $wId => $wModel)
                                         <tr wire:key="worker-{{ $wId }}" class="hover:bg-blue-50/50 transition">
+                                            <td class="px-6 py-3 text-center font-bold text-gray-400">#{{ $wId }}</td>
                                             <td class="px-6 py-3 font-medium text-gray-900">{{ $wModel->name }}</td>
                                             <td class="px-6 py-3 text-sm text-gray-500">{{ $wModel->trade }}</td>
                                             <td class="px-6 py-3 text-right flex justify-end items-center gap-2">
@@ -204,6 +206,7 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-white text-gray-400 text-xs uppercase tracking-wider border-b border-gray-100">
+                                    <th class="px-6 py-3 font-medium text-center w-8">ID</th>
                                     <th class="px-6 py-3 font-medium">Worker Name</th>
                                     <th class="px-6 py-3 font-medium">Trade</th>
                                     <th class="px-6 py-3 font-medium text-right">Actions</th>
@@ -212,6 +215,7 @@
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($permanentWorkers as $pw)
                                     <tr class="hover:bg-gray-50 transition">
+                                        <td class="px-6 py-3 text-center font-bold text-gray-400">#{{ $pw->id }}</td>
                                         <td class="px-6 py-3 font-medium text-gray-900">{{ $pw->name }}</td>
                                         <td class="px-6 py-3 text-sm text-gray-500">{{ $pw->trade }}</td>
                                         <td class="px-6 py-3 text-right">
