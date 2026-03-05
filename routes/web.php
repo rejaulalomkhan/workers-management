@@ -18,9 +18,10 @@ use Illuminate\Support\Facades\Route;
 // ── PWA ───────────────────────────────────────────────────────────────────────
 Route::get('/manifest.json', function () {
     $setting = \App\Models\Setting::first();
-    $iconUrl = $setting && $setting->logo_path
-        ? asset($setting->logo_path)
-        : asset('favicon.ico');
+    $iconUrl = $setting && $setting->logo_path ? asset($setting->logo_path) : asset('favicon.ico');
+
+    $icon192 = file_exists(public_path('pwa-icon-192.png')) ? asset('pwa-icon-192.png') : $iconUrl;
+    $icon512 = file_exists(public_path('pwa-icon-512.png')) ? asset('pwa-icon-512.png') : $iconUrl;
 
     return response()->json([
         'name'             => $setting->company_name ?? 'FHTS System',
@@ -32,8 +33,8 @@ Route::get('/manifest.json', function () {
         'theme_color'      => '#83bddfff',
         'orientation'      => 'portrait-primary',
         'icons'            => [
-            ['src' => $iconUrl, 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
-            ['src' => $iconUrl, 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
+            ['src' => $icon192, 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
+            ['src' => $icon512, 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
         ],
     ])->header('Content-Type', 'application/manifest+json');
 })->name('pwa.manifest');

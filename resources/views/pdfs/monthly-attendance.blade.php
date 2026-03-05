@@ -35,7 +35,7 @@
         <thead>
             <tr>
                 <th class="sn-col">SN</th>
-                <th class="sn-col" style="width: 25px;">ID No.</th>
+                <th class="sn-col" style="width: 40px; white-space: nowrap;">ID No.</th>
                 <th class="name-col">Name</th>
                 <th class="trade-col">Trade</th>
                 @for($d=1; $d<=$daysInMonth; $d++)
@@ -48,7 +48,7 @@
             @foreach($reportData as $index => $row)
                 <tr>
                     <td class="sn-col">{{ $index + 1 }}</td>
-                    <td class="sn-col">{{ $row['worker']->id }}</td>
+                    <td class="sn-col">{{ $row['worker']->worker_id_number }}</td>
                     <td class="name-col">{{ $row['worker']->name }}</td>
                     <td class="trade-col">{{ $row['worker']->trade }}</td>
                     @foreach($row['days'] as $day => $val)

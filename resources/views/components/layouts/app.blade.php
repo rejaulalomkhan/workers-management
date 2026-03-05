@@ -15,10 +15,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="{{ $branding->company_name ?? 'FHTS' }}">
     <meta name="application-name" content="{{ $branding->company_name ?? 'FHTS' }}">
-    @if($branding && $branding->logo_path)
-        <link rel="icon" href="{{ asset($branding->logo_path) }}">
-        <link rel="apple-touch-icon" href="{{ asset($branding->logo_path) }}">
-    @endif
+    @php
+        $pwaIcon = file_exists(public_path('pwa-icon-512.png')) ? asset('pwa-icon-512.png') : ($branding->logo_path ? asset($branding->logo_path) : asset('favicon.ico'));
+    @endphp
+    <link rel="icon" href="{{ $pwaIcon }}">
+    <link rel="apple-touch-icon" href="{{ $pwaIcon }}">
 
     @livewireStyles
 
@@ -307,8 +308,11 @@
          style="display:none; position:fixed; inset:0; z-index:9999;
                 background:#0f255a; flex-direction:column;
                 align-items:center; justify-content:center; gap:16px;">
-        @if($branding && $branding->logo_path)
-        <img src="{{ asset($branding->logo_path) }}"
+        @php
+            $loaderLogo = file_exists(public_path('loader-logo.png')) ? asset('loader-logo.png') : ($branding->logo_path ? asset($branding->logo_path) : null);
+        @endphp
+        @if($loaderLogo)
+        <img src="{{ $loaderLogo }}"
              style="width:72px; height:72px; object-fit:contain;
                     border-radius:16px; background:#fff; padding:8px;
                     animation: pulse-logo 1.2s ease-in-out infinite;">
