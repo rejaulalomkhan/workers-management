@@ -11,6 +11,7 @@ class SettingsManager extends Component
     use WithFileUploads;
 
     public $company_name;
+    public $short_name;
     public $company_name_arabic;
     public $trn;
     public $address;
@@ -32,6 +33,7 @@ class SettingsManager extends Component
         $setting = Setting::first() ?? new Setting();
         
         $this->company_name = $setting->company_name;
+        $this->short_name = $setting->short_name;
         $this->company_name_arabic = $setting->company_name_arabic;
         $this->trn = $setting->trn;
         $this->address = $setting->address;
@@ -50,6 +52,7 @@ class SettingsManager extends Component
     {
         $this->validate([
             'company_name' => 'required|string',
+            'short_name' => 'nullable|string',
             'vat_rate' => 'required|numeric',
         ]);
 
@@ -92,6 +95,7 @@ class SettingsManager extends Component
         }
 
         $setting->company_name = $this->company_name;
+        $setting->short_name = $this->short_name;
         $setting->company_name_arabic = $this->company_name_arabic;
         $setting->trn = $this->trn;
         $setting->address = $this->address;

@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{{ $title ?? 'FHTS System' }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @php $branding = \App\Models\Setting::first(); @endphp
+    <title>{{ $title ?? ($branding->short_name ?? 'LaborLog') }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- ── PWA Meta ── --}}
     <link rel="manifest" href="/manifest.json">
@@ -13,8 +13,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="{{ $branding->company_name ?? 'FHTS' }}">
-    <meta name="application-name" content="{{ $branding->company_name ?? 'FHTS' }}">
+    <meta name="apple-mobile-web-app-title" content="{{ $branding->company_name ?? ($branding->short_name ?? 'LaborLog') }}">
+    <meta name="application-name" content="{{ $branding->company_name ?? ($branding->short_name ?? 'LaborLog') }}">
     @php
         $pwaIcon = file_exists(public_path('pwa-icon-512.png')) ? asset('pwa-icon-512.png') : ($branding->logo_path ? asset($branding->logo_path) : asset('favicon.ico'));
     @endphp
@@ -103,7 +103,7 @@
                     @if(isset($branding) && $branding->logo_path)
                         <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="h-7 w-auto object-contain">
                     @else
-                        <span class="font-bold text-slate-800 text-sm tracking-tight">FHTS</span>
+                        <span class="font-bold text-slate-800 text-sm tracking-tight">{{ $branding->company_name ?? ($branding->short_name ?? 'LaborLog') }}</span>
                     @endif
                 </a>
             </div>
@@ -156,7 +156,7 @@
                          class="h-8 w-auto object-contain bg-white rounded p-0.5">
                 @endif
                 <span class="font-bold text-white text-sm tracking-tight leading-tight">
-                    FHTS<br><span class="text-slate-400 font-normal text-[10px] tracking-widest uppercase">Management</span>
+                    {{ $branding->company_name ?? ($branding->short_name ?? 'LaborLog') }}<br><span class="text-slate-400 font-normal text-[10px] tracking-widest uppercase">Management</span>
                 </span>
             </a>
             <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-white p-1 rounded transition">
@@ -452,7 +452,7 @@
         window.addEventListener('appinstalled', (evt) => {
             // Hide the app-provided install promotion
             window.dispatchEvent(new CustomEvent('pwa-install-ready', { detail: false }));
-            console.log('FHTS App was installed');
+            console.log('App was installed');
         });
     </script>
 </body>

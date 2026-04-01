@@ -18,6 +18,11 @@
                     @error('company_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700">Short Name</label>
+                    <input type="text" wire:model="short_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" placeholder="e.g. LaborLog">
+                    @error('short_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700">Company Name (Arabic)</label>
                     <input type="text" wire:model="company_name_arabic" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" dir="rtl">
                 </div>

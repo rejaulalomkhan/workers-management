@@ -15,15 +15,20 @@
                 {{-- Header --}}
                 <div class="text-center mb-10">
                     <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white shadow-xl shadow-slate-200/50 mb-6 group transition-transform hover:scale-105 border border-slate-50">
-                        @php $branding = \App\Models\Setting::first(); @endphp
+                        @php 
+                            $branding = \App\Models\Setting::first(); 
+                            $shortName = $branding->short_name ?? 'LaborLog';
+                            $companyName = $branding->company_name ?? 'LaborLog Software';
+                            $initials = substr($shortName, 0, 2);
+                        @endphp
                         @if($branding && $branding->logo_path)
                             <img src="{{ asset($branding->logo_path) }}" alt="Logo" class="w-14 h-14 object-contain">
                         @else
-                            <span class="text-blue-600 font-black text-2xl tracking-tighter">FH</span>
+                            <span class="text-blue-600 font-black text-2xl tracking-tighter">{{ strtoupper($initials) }}</span>
                         @endif
                     </div>
                     <h4 class="text-[13px] sm:text-base font-bold text-slate-800 tracking-tight mb-1 px-1 uppercase leading-tight">
-                        {{ $branding->company_name ?? 'FHTS Software' }}
+                        {{ $companyName }}
                     </h4>
                     <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[1px]">Software Login</p>
                 </div>
