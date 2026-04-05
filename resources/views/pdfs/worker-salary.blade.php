@@ -4,121 +4,133 @@
     <meta charset="utf-8">
     <title>Salary Slip – {{ $worker->name }}</title>
     <style>
-        @php echo '@page { margin: 12mm 10mm; }'; @endphp
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: DejaVu Sans, sans-serif; font-size: 10px; color: #1a1a1a; background: #fff; }
+        @page { margin: 12mm 15mm; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 10px; color: #202020; line-height: 1.4; }
+        
+        /* Typography */
+        .font-bold { font-weight: bold; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-gray { color: #555; }
+        .text-blue { color: #0d47a1; }
+        .text-red { color: #c62828; }
+        .text-green { color: #1b5e20; }
 
-        /* ── Header ── */
-        .header { display: table; width: 100%; margin-bottom: 8px; border-bottom: 2px solid #1e3a5f; padding-bottom: 6px; }
-        .header-logo { display: table-cell; width: 60px; vertical-align: middle; }
-        .header-logo img { max-height: 50px; max-width: 55px; object-fit: contain; }
-        .header-info  { display: table-cell; vertical-align: middle; padding-left: 10px; }
-        .header-info .company { font-size: 14px; font-weight: bold; color: #1e3a5f; }
-        .header-info .sub     { font-size: 10px; color: #555; margin-top: 2px; }
-        .header-right { display: table-cell; text-align: right; vertical-align: middle; }
-        .slip-title { font-size: 16px; font-weight: bold; color: #1e3a5f; letter-spacing: 1px; }
-        .slip-period { font-size: 11px; color: #555; margin-top: 3px; }
+        /* General Tables */
+        .w-full { width: 100%; }
+        
+        /* Header */
+        table.tbl-header { width: 100%; border-bottom: 2px solid #0d47a1; padding-bottom: 8px; margin-bottom: 12px; }
+        .logo-cell { width: 70px; vertical-align: middle; }
+        .logo-cell img { max-height: 50px; max-width: 60px; object-fit: contain; }
+        .company-cell { vertical-align: middle; padding-left: 10px; }
+        .company-title { font-size: 16px; font-weight: bold; color: #0d47a1; margin-bottom: 2px; text-transform: uppercase; }
+        .company-sub { font-size: 9px; color: #555; line-height: 1.3;}
+        .slip-title-cell { text-align: right; vertical-align: middle; }
+        .slip-title { font-size: 20px; font-weight: bold; color: #0d47a1; text-transform: uppercase; letter-spacing: 1px; }
+        .slip-month { font-size: 11px; font-weight: bold; color: #333; margin-top: 4px; padding: 4px 8px; border: 1px solid #ccc; background:#f9f9f9; display: inline-block;}
 
-        /* ── Worker Info ── */
-        .worker-box { background: #f0f4f9; border: 1px solid #c8d8ec; border-radius: 4px;
-                      padding: 8px 12px; margin-bottom: 8px; display: table; width: 100%; }
-        .worker-box .col { display: table-cell; width: 33%; vertical-align: top; }
-        .worker-box .label { font-size: 8px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-        .worker-box .value { font-size: 11px; font-weight: bold; color: #1e3a5f; margin-top: 2px; }
+        /* Worker Details */
+        table.tbl-details { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+        table.tbl-details td { padding: 6px 10px; border: 1px solid #ddd; background: #fdfdfd; font-size: 11px; width: 33.33%;}
+        .lbl-title { font-size: 8px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 2px; }
+        .lbl-val { font-size: 13px; font-weight: bold; color: #000; }
 
-        /* ── Attendance Grid ── */
-        .section-title { font-size: 10px; font-weight: bold; color: #1e3a5f; text-transform: uppercase;
-                         letter-spacing: 0.5px; border-bottom: 1px solid #1e3a5f; padding-bottom: 3px; margin-bottom: 5px; }
+        /* Attendance Grid */
+        .section-title { font-size: 10px; font-weight: bold; color: #0d47a1; border-bottom: 1px solid #bbb; padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase; }
+        table.att-grid { width: 100%; border-collapse: collapse; margin-bottom: 15px; table-layout: fixed; }
+        table.att-grid th { background: #0d47a1; color: #fff; font-size: 8px; font-weight: bold; text-align: center; padding: 5px 2px; border: 1px solid #1565c0; }
+        table.att-grid td { text-align: center; font-size: 9px; padding: 5px 1px; border: 1px solid #ccc; vertical-align: middle; }
+        
+        .att-p { color: #1b5e20; font-weight: bold; background: #f1f8e9; }
+        .att-a { color: #c62828; font-weight: bold; background: #ffebee; }
+        
+        .col-hrs { background: #e3f2fd; color: #0d47a1; font-weight: bold; }
+        .col-prs { background: #e8f5e9; color: #1b5e20; font-weight: bold; }
+        .col-abs { background: #ffebee; color: #c62828; font-weight: bold; }
+        .proj-name { font-size: 6px; color: #666; display: block; padding-top: 2px; }
 
-        table.att { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        table.att th { background: #1e3a5f; color: #fff; font-size: 8px; font-weight: bold;
-                       text-align: center; padding: 4px 2px; border: 1px solid #1e3a5f; }
-        table.att td { text-align: center; font-size: 9px; padding: 4px 2px;
-                       border: 1px solid #dde4ef; vertical-align: middle; }
-        table.att td.present { background: #e8f5e9; color: #2e7d32; font-weight: bold; }
-        table.att td.absent  { background: #fce8e8; color: #c62828; font-weight: bold; }
-        table.att td.empty   { color: #bbb; }
+        /* Bottom Layout Split */
+        table.bottom-split { width: 100%; border-collapse: collapse; }
+        table.bottom-split td.left-panel { width: 55%; vertical-align: top; padding-right: 25px; }
+        table.bottom-split td.right-panel { width: 45%; vertical-align: top; }
 
-        /* ── Project per day ── */
-        .proj-tag { font-size: 7px; color: #555; display: block; margin-top: 1px; line-height: 1.2; }
+        /* Payments Table */
+        table.tbl-payments { width: 100%; border-collapse: collapse; font-size: 9px; margin-bottom: 10px; }
+        table.tbl-payments th { background: #f0f0f0; border: 1px solid #ccc; padding: 5px; text-align: left; }
+        table.tbl-payments td { border: 1px solid #ddd; padding: 5px; }
 
-        /* ── Summary ── */
-        .summary-wrap { display: table; width: 100%; margin-top: 8px; }
-        .sum-cards { display: table-cell; width: 68%; vertical-align: top; }
-        .sum-pay   { display: table-cell; width: 30%; vertical-align: top; padding-left: 10px; }
+        /* Invoice Totals Table */
+        table.tbl-totals { width: 100%; border-collapse: collapse; font-size: 11px; }
+        table.tbl-totals td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+        table.tbl-totals tr.gross td { font-size: 13px; font-weight: bold; background: #e3f2fd; border-bottom: 1px solid #bbdefb; color: #0d47a1;}
+        table.tbl-totals tr.paid td { font-size: 11px; font-weight: bold; color: #1b5e20; border-bottom: 1px solid #c8e6c9; }
+        table.tbl-totals tr.due td { font-size: 14px; font-weight: bold; background: #ffebee; border-bottom: 1px solid #ffcdd2; color: #c62828; }
 
-        .cards { display: table; width: 100%; border-collapse: separate; border-spacing: 5px; }
-        .card  { display: table-cell; text-align: center; background: #f0f4f9; border: 1px solid #c8d8ec;
-                 border-radius: 4px; padding: 6px 4px; }
-        .card .num   { font-size: 18px; font-weight: bold; color: #1e3a5f; line-height: 1; }
-        .card .lbl   { font-size: 8px; color: #666; margin-top: 3px; }
+        /* Footer */
+        table.tbl-sigs { width: 100%; margin-top: 50px; text-align: center; }
+        table.tbl-sigs td { width: 33.33%; vertical-align: bottom; }
+        .sig-line { border-top: 1px solid #000; width: 60%; margin: 0 auto; padding-top: 4px; font-size: 9px; text-transform: uppercase; font-weight: bold; color: #444;}
 
-        .pay-box { background: #1e3a5f; color: #fff; border-radius: 5px; padding: 12px; text-align: center; }
-        .pay-box .pay-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: .8; }
-        .pay-box .pay-amount { font-size: 22px; font-weight: bold; margin-top: 4px; }
-        .pay-box .pay-rate   { font-size: 9px; opacity: .7; margin-top: 4px; }
-
-        /* ── Footer sig ── */
-        .footer { margin-top: 20px; display: table; width: 100%; border-top: 1px solid #ccc; padding-top: 8px; }
-        .sig { display: table-cell; text-align: center; width: 33%; }
-        .sig .line { border-bottom: 1px solid #666; width: 80%; margin: 0 auto 4px; }
-        .sig .name { font-size: 9px; color: #555; }
+        .system-footer { margin-top: 20px; text-align: center; font-size: 8px; color: #a0a0a0; border-top: 1px solid #eee; padding-top: 5px; }
     </style>
 </head>
 <body>
 
     {{-- ── HEADER ── --}}
-    <div class="header">
-        <div class="header-logo">
+    <table class="tbl-header">
+        <tr>
             @if($setting && $setting->logo_path)
-            <img src="{{ public_path($setting->logo_path) }}" alt="Logo">
+            <td class="logo-cell">
+                <img src="{{ public_path($setting->logo_path) }}" alt="Logo">
+            </td>
             @endif
-        </div>
-        <div class="header-info">
-            <div class="company">{{ $setting->company_name ?? 'Company Name' }}</div>
-            @if($setting->company_name_arabic)
-            <div class="sub">{{ $setting->company_name_arabic }}</div>
-            @endif
-            @if($setting->address)
-            <div class="sub">{{ $setting->address }}</div>
-            @endif
-            @if($setting->trn)
-            <div class="sub">TRN: {{ $setting->trn }}</div>
-            @endif
-        </div>
-        <div class="header-right">
-            <div class="slip-title">SALARY SLIP</div>
-            <div class="slip-period">{{ $dateLabel }}</div>
-        </div>
-    </div>
+            <td class="company-cell">
+                <div class="company-title">{{ $setting->company_name ?? 'Company Name' }}</div>
+                @if($setting->company_name_arabic)
+                <div class="company-sub">{{ $setting->company_name_arabic }}</div>
+                @endif
+                <div class="company-sub">
+                    @if($setting->address) {{ $setting->address }} <br> @endif
+                    @if($setting->trn) <strong>TRN:</strong> {{ $setting->trn }} @endif
+                </div>
+            </td>
+            <td class="slip-title-cell">
+                <div class="slip-title">Salary Slip</div>
+                <div class="slip-month">{{ $dateLabel }}</div>
+            </td>
+        </tr>
+    </table>
 
     {{-- ── WORKER INFO ── --}}
-    <div class="worker-box">
-        <div class="col">
-            <div class="label">Employee Name</div>
-            <div class="value">{{ strtoupper($worker->name) }}</div>
-        </div>
-        <div class="col">
-            <div class="label">Trade / Designation</div>
-            <div class="value">{{ $worker->trade }}</div>
-        </div>
-        <div class="col">
-            <div class="label">Employee ID</div>
-            <div class="value">{{ $worker->worker_id_number ?? '—' }}</div>
-        </div>
-    </div>
+    <table class="tbl-details">
+        <tr>
+            <td>
+                <span class="lbl-title">Employee Name</span>
+                <span class="lbl-val">{{ strtoupper($worker->name) }}</span>
+            </td>
+            <td>
+                <span class="lbl-title">Trade / Designation</span>
+                <span class="lbl-val">{{ strtoupper($worker->trade) }}</span>
+            </td>
+            <td class="text-right">
+                <span class="lbl-title">Employee ID</span>
+                <span class="lbl-val">{{ $worker->worker_id_number ?? '—' }}</span>
+            </td>
+        </tr>
+    </table>
 
     {{-- ── ATTENDANCE GRID ── --}}
-    <div class="section-title">Daily Attendance — {{ $dateLabel }}</div>
-    <table class="att">
+    <div class="section-title">Daily Attendance — {{ strtoupper($dateLabel) }}</div>
+    <table class="att-grid">
         <thead>
             <tr>
                 @for($d = 1; $d <= $daysInMonth; $d++)
                 <th>{{ $d }}</th>
                 @endfor
-                <th style="background:#2d5a9e;">Total<br>Hrs</th>
-                <th style="background:#2d5a9e;">Days<br>Present</th>
-                <th style="background:#c62828;">Absent</th>
+                <th style="background:#0d47a1; font-size:7px;">TOTAL<br>HRS</th>
+                <th style="background:#1b5e20; font-size:7px;">DAYS<br>PRST</th>
+                <th style="background:#c62828; font-size:7px;">ABST</th>
             </tr>
         </thead>
         <tbody>
@@ -126,126 +138,105 @@
                 @for($d = 1; $d <= $daysInMonth; $d++)
                     @php $att = $attendances[$d] ?? null; @endphp
                     @if($att && is_numeric($att->hours))
-                        <td class="present">
+                        <td class="att-p">
                             {{ $att->hours }}
                             @if($att->project)
-                            <span class="proj-tag">{{ Str::limit($att->project->name, 6, '') }}</span>
+                            <span class="proj-name">{{ Str::limit($att->project->name ?? '', 5, '') }}</span>
                             @endif
                         </td>
                     @elseif($att && strtoupper($att->hours) === 'A')
-                        <td class="absent">A</td>
+                        <td class="att-a">A</td>
                     @else
-                        <td class="empty">—</td>
+                        <td style="color:#d1d5db;">-</td>
                     @endif
                 @endfor
-                <td style="font-weight:bold; font-size:11px; background:#e8f0fb;">{{ number_format($totalHours, 1) }}</td>
-                <td style="font-weight:bold; background:#e8f5e9; color:#2e7d32;">{{ $daysPresent }}</td>
-                <td style="font-weight:bold; background:#fce8e8; color:#c62828;">{{ $daysAbsent }}</td>
+                <td class="col-hrs">{{ number_format($totalHours, 1) }}</td>
+                <td class="col-prs">{{ $daysPresent }}</td>
+                <td class="col-abs">{{ $daysAbsent }}</td>
             </tr>
         </tbody>
     </table>
 
-    {{-- ── SUMMARY + PAYMENT ── --}}
-    <div class="summary-wrap">
-        <div class="sum-cards">
-            <div class="section-title" style="margin-bottom:6px;">Summary</div>
-            <div class="cards">
-                <div class="card">
-                    <div class="num">{{ number_format($totalHours, 1) }}</div>
-                    <div class="lbl">Total Hours</div>
-                </div>
-                <div class="card">
-                    <div class="num">{{ $daysPresent }}</div>
-                    <div class="lbl">Days Present</div>
-                </div>
-                <div class="card">
-                    <div class="num">{{ $daysAbsent }}</div>
-                    <div class="lbl">Days Absent</div>
-                </div>
-                <div class="card">
-                    <div class="num">{{ number_format($worker->internal_pay_rate, 2) }}</div>
-                    <div class="lbl">Rate / Hr ({{ $setting->currency ?? 'AED' }})</div>
-                </div>
-            </div>
-
-            {{-- Calculation breakdown --}}
-            <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:10px;">
-                <tr style="background:#f5f5f5;">
-                    <td style="padding:4px 8px; border:1px solid #ddd;">Total Hours Worked</td>
-                    <td style="padding:4px 8px; border:1px solid #ddd; text-align:right;">{{ number_format($totalHours, 2) }} hrs</td>
-                </tr>
-                <tr>
-                    <td style="padding:4px 8px; border:1px solid #ddd;">Rate per Hour</td>
-                    <td style="padding:4px 8px; border:1px solid #ddd; text-align:right;">{{ $setting->currency ?? 'AED' }} {{ number_format($worker->internal_pay_rate, 2) }}</td>
-                </tr>
-                <tr style="background:#e8f0fb; font-weight:bold;">
-                    <td style="padding:5px 8px; border:1px solid #c8d8ec;">GROSS SALARY</td>
-                    <td style="padding:5px 8px; border:1px solid #c8d8ec; text-align:right; font-size:12px;">{{ $setting->currency ?? 'AED' }} {{ number_format($grossSalary, 2) }}</td>
-                </tr>
-                <tr style="background:#e8f5e9; color:#2e7d32;">
-                    <td style="padding:4px 8px; border:1px solid #c8e6c9;">Paid This Month</td>
-                    <td style="padding:4px 8px; border:1px solid #c8e6c9; text-align:right; font-weight:bold;">− {{ $setting->currency ?? 'AED' }} {{ number_format($monthPaid, 2) }}</td>
-                </tr>
-                <tr style="background:#fce8e8; color:#c62828; font-weight:bold;">
-                    <td style="padding:5px 8px; border:1px solid #f5c6c6;">OUTSTANDING DUE (All Time)</td>
-                    <td style="padding:5px 8px; border:1px solid #f5c6c6; text-align:right; font-size:12px;">{{ $setting->currency ?? 'AED' }} {{ number_format($overallDue, 2) }}</td>
-                </tr>
-            </table>
-
-            {{-- Monthly payments list --}}
-            @if($monthPayments->count() > 0)
-            <div style="margin-top:8px;">
-                <div style="font-size:9px; font-weight:bold; color:#1e3a5f; text-transform:uppercase; margin-bottom:4px;">Payments Received This Month</div>
-                <table style="width:100%; border-collapse:collapse; font-size:9px;">
-                    <tr style="background:#1e3a5f; color:#fff;">
-                        <th style="padding:3px 6px; text-align:left;">Date</th>
-                        <th style="padding:3px 6px; text-align:left;">Notes</th>
-                        <th style="padding:3px 6px; text-align:right;">Amount</th>
-                    </tr>
-                    @foreach($monthPayments as $pay)
-                    <tr style="border-bottom:1px solid #eee;">
-                        <td style="padding:3px 6px;">{{ \Carbon\Carbon::parse($pay->payment_date)->format('d M Y') }}</td>
-                        <td style="padding:3px 6px; color:#555;">{{ $pay->notes ?? '—' }}</td>
-                        <td style="padding:3px 6px; text-align:right; color:#2e7d32; font-weight:bold;">{{ $setting->currency ?? 'AED' }} {{ number_format($pay->amount, 2) }}</td>
-                    </tr>
-                    @endforeach
+    {{-- ── BOTTOM SPLIT ── --}}
+    <table class="bottom-split">
+        <tr>
+            <td class="left-panel">
+                @if($monthPayments->count() > 0)
+                <div class="section-title">Payments Disbursed This Month</div>
+                <table class="tbl-payments">
+                    <thead>
+                        <tr>
+                            <th style="width:25%;">Date</th>
+                            <th style="width:50%;">Notes / Reference</th>
+                            <th style="width:25%;text-align:right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($monthPayments as $pay)
+                        <tr>
+                            <td>{{ \Carbon\Carbon::parse($pay->payment_date)->format('d M Y') }}</td>
+                            <td class="text-gray">{{ $pay->notes ?? '—' }}</td>
+                            <td class="text-right font-bold text-green">{{ $setting->currency ?? 'AED' }} {{ number_format($pay->amount, 2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
                 </table>
-            </div>
-            @endif
-        </div>
-
-        <div class="sum-pay">
-            <div class="pay-box">
-                <div class="pay-label">Gross Salary</div>
-                <div class="pay-amount" style="font-size:18px;">{{ number_format($grossSalary, 2) }}</div>
-                <div class="pay-rate">{{ $setting->currency ?? 'AED' }} &nbsp;|&nbsp; {{ $dateLabel }}</div>
-            </div>
-            <div style="margin-top:6px; background:#e8f5e9; border:1px solid #c8e6c9; border-radius:4px; padding:8px; text-align:center;">
-                <div style="font-size:9px; color:#2e7d32; text-transform:uppercase; letter-spacing:.5px;">Paid This Month</div>
-                <div style="font-size:16px; font-weight:bold; color:#2e7d32; margin-top:2px;">{{ $setting->currency ?? 'AED' }} {{ number_format($monthPaid, 2) }}</div>
-            </div>
-            <div style="margin-top:6px; background:#fce8e8; border:1px solid #f5c6c6; border-radius:4px; padding:8px; text-align:center;">
-                <div style="font-size:9px; color:#c62828; text-transform:uppercase; letter-spacing:.5px;">Outstanding Due</div>
-                <div style="font-size:18px; font-weight:bold; color:#c62828; margin-top:2px;">{{ $setting->currency ?? 'AED' }} {{ number_format($overallDue, 2) }}</div>
-                <div style="font-size:8px; color:#999; margin-top:2px;">All-time balance</div>
-            </div>
-        </div>
-    </div>
+                @else
+                <div class="section-title">Payments Disbursed This Month</div>
+                <p style="font-size:9px; color:#777; font-style:italic;">No payments processed during this period.</p>
+                @endif
+                
+                <div style="margin-top: 20px; font-size: 8px; line-height: 1.5; color: #777; padding: 10px; background: #fafafa; border: 1px dotted #ccc;">
+                    <strong>Notice:</strong> This is a system-generated salary slip and does not require a physical signature for validity. 
+                    The "Outstanding Balance" accurately reflects the collective all-time pending dues at the exact moment of generating this document.
+                </div>
+            </td>
+            
+            <td class="right-panel">
+                <div class="section-title">Salary Calculation</div>
+                <table class="tbl-totals">
+                    <tr>
+                        <td class="text-gray">Total Hours Worked</td>
+                        <td class="text-right font-bold">{{ number_format($totalHours, 2) }} hrs</td>
+                    </tr>
+                    <tr>
+                        <td class="text-gray">Rate per Hour</td>
+                        <td class="text-right font-bold">{{ $setting->currency ?? 'AED' }} {{ number_format($worker->internal_pay_rate, 2) }}</td>
+                    </tr>
+                    <tr class="gross">
+                        <td>GROSS SALARY</td>
+                        <td class="text-right">{{ $setting->currency ?? 'AED' }} {{ number_format($grossSalary, 2) }}</td>
+                    </tr>
+                    <tr class="paid">
+                        <td>Less: Paid This Month</td>
+                        <td class="text-right">− {{ $setting->currency ?? 'AED' }} {{ number_format($monthPaid, 2) }}</td>
+                    </tr>
+                    <tr class="due">
+                        <td>OUTSTANDING BALANCE</td>
+                        <td class="text-right">{{ $setting->currency ?? 'AED' }} {{ number_format($overallDue, 2) }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
     {{-- ── FOOTER SIGNATURES ── --}}
-    <div class="footer">
-        <div class="sig">
-            <div class="line">&nbsp;</div>
-            <div class="name">Employee Signature</div>
-        </div>
-        <div class="sig">
-            <div class="line">&nbsp;</div>
-            <div class="name">HR / Accounts</div>
-        </div>
-        <div class="sig">
-            <div class="line">&nbsp;</div>
-            <div class="name">Authorized Signature</div>
-        </div>
+    <table class="tbl-sigs">
+        <tr>
+            <td>
+                <div class="sig-line">Employee Signature</div>
+            </td>
+            <td>
+                <div class="sig-line">HR / Accounts</div>
+            </td>
+            <td>
+                <div class="sig-line">Authorized Signature</div>
+            </td>
+        </tr>
+    </table>
+    
+    <div class="system-footer">
+        Generated securely by {{ $setting->company_name ?? 'Payroll System' }} &bull; {{ date('d M Y H:i A') }}
     </div>
 
 </body>
