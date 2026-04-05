@@ -176,17 +176,17 @@
         <div class="bg-white rounded-xl shadow border border-gray-100 p-4">
             <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Revenue</div>
             <div class="text-2xl font-bold text-blue-600">{{ number_format($s['totalRevenue'], 0) }}</div>
-            <div class="text-xs text-gray-400 mt-1">AED billed</div>
+            <div class="text-xs text-gray-400 mt-1">{{ \App\Models\Setting::first()->currency ?? 'AED' }} billed</div>
         </div>
         <div class="bg-white rounded-xl shadow border border-gray-100 p-4">
             <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cost</div>
             <div class="text-2xl font-bold text-orange-500">{{ number_format($s['totalCost'], 0) }}</div>
-            <div class="text-xs text-gray-400 mt-1">AED paid out</div>
+            <div class="text-xs text-gray-400 mt-1">{{ \App\Models\Setting::first()->currency ?? 'AED' }} paid out</div>
         </div>
         <div class="bg-white rounded-xl shadow border border-{{ $isProfit ? 'green' : 'red' }}-100 p-4 {{ $isProfit ? 'bg-green-50' : 'bg-red-50' }}">
             <div class="text-xs font-semibold {{ $isProfit ? 'text-green-600' : 'text-red-600' }} uppercase tracking-wider mb-1">{{ $isProfit ? 'Profit' : 'Loss' }}</div>
             <div class="text-2xl font-bold {{ $isProfit ? 'text-green-600' : 'text-red-600' }}">{{ number_format(abs($s['totalProfit']), 0) }}</div>
-            <div class="text-xs text-gray-400 mt-1">AED net</div>
+            <div class="text-xs text-gray-400 mt-1">{{ \App\Models\Setting::first()->currency ?? 'AED' }} net</div>
         </div>
         <div class="bg-white rounded-xl shadow border border-gray-100 p-4">
             <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Margin</div>
@@ -233,9 +233,9 @@
                             <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                 <th class="px-4 py-3">Category</th>
                                 <th class="px-4 py-3 text-right">Hours</th>
-                                <th class="px-4 py-3 text-right">Revenue (AED)</th>
-                                <th class="px-4 py-3 text-right">Cost (AED)</th>
-                                <th class="px-4 py-3 text-right">Profit (AED)</th>
+                                <th class="px-4 py-3 text-right">Revenue ({{ \App\Models\Setting::first()->currency ?? 'AED' }})</th>
+                                <th class="px-4 py-3 text-right">Cost ({{ \App\Models\Setting::first()->currency ?? 'AED' }})</th>
+                                <th class="px-4 py-3 text-right">Profit ({{ \App\Models\Setting::first()->currency ?? 'AED' }})</th>
                                 <th class="px-4 py-3 text-right">Margin</th>
                             </tr>
                         </thead>
@@ -282,9 +282,9 @@
                             <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                 <th class="px-4 py-3">Project</th>
                                 <th class="px-4 py-3 text-right">Hours</th>
-                                <th class="px-4 py-3 text-right">Revenue (AED)</th>
-                                <th class="px-4 py-3 text-right">Cost (AED)</th>
-                                <th class="px-4 py-3 text-right">Profit (AED)</th>
+                                <th class="px-4 py-3 text-right">Revenue ({{ \App\Models\Setting::first()->currency ?? 'AED' }})</th>
+                                <th class="px-4 py-3 text-right">Cost ({{ \App\Models\Setting::first()->currency ?? 'AED' }})</th>
+                                <th class="px-4 py-3 text-right">Profit ({{ \App\Models\Setting::first()->currency ?? 'AED' }})</th>
                                 <th class="px-4 py-3 text-right">Margin</th>
                             </tr>
                         </thead>
@@ -381,15 +381,15 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-500">Revenue</span>
-                                <span class="text-blue-600 font-semibold">AED {{ number_format($row['revenue'], 0) }}</span>
+                                <span class="text-blue-600 font-semibold">{{ \App\Models\Setting::first()->currency ?? 'AED' }} {{ number_format($row['revenue'], 0) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-500">Cost</span>
-                                <span class="text-orange-500">AED {{ number_format($row['cost'], 0) }}</span>
+                                <span class="text-orange-500">{{ \App\Models\Setting::first()->currency ?? 'AED' }} {{ number_format($row['cost'], 0) }}</span>
                             </div>
                             <div class="flex justify-between border-t pt-1.5 mt-1">
                                 <span class="font-semibold text-gray-700">{{ $isPos ? 'Profit' : 'Loss' }}</span>
-                                <span class="font-bold {{ $isPos ? 'text-green-600' : 'text-red-500' }}">AED {{ number_format(abs($row['profit']), 0) }}</span>
+                                <span class="font-bold {{ $isPos ? 'text-green-600' : 'text-red-500' }}">{{ \App\Models\Setting::first()->currency ?? 'AED' }} {{ number_format(abs($row['profit']), 0) }}</span>
                             </div>
                         </div>
                         {{-- Progress bar --}}

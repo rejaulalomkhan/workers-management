@@ -78,7 +78,7 @@
                     </div>
                     <div class="bg-white p-4 sm:p-5 rounded-xl border-t-4 border-red-500 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
                         <p class="text-xs sm:text-sm text-gray-500 font-medium mb-1">Total Receivable</p>
-                        <h4 class="text-xl sm:text-2xl font-bold text-red-600"><span class="text-xs sm:text-sm font-normal text-red-400">AED</span> {{ number_format($totalReceivable, 2) }}</h4>
+                        <h4 class="text-xl sm:text-2xl font-bold text-red-600"><span class="text-xs sm:text-sm font-normal text-red-400">{{ \App\Models\Setting::first()->currency ?? 'AED' }}</span> {{ number_format($totalReceivable, 2) }}</h4>
                         <p class="text-[10px] sm:text-xs text-gray-400 mt-2">Lifetime Total</p>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="bg-white p-4 sm:p-5 rounded-xl border-t-4 border-blue-500 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
                         <p class="text-xs sm:text-sm text-gray-500 font-medium mb-1">This Month's Receivable</p>
-                        <h4 class="text-xl sm:text-2xl font-bold text-blue-600"><span class="text-xs sm:text-sm font-normal text-blue-400">AED</span> {{ number_format($monthReceivable, 2) }}</h4>
+                        <h4 class="text-xl sm:text-2xl font-bold text-blue-600"><span class="text-xs sm:text-sm font-normal text-blue-400">{{ \App\Models\Setting::first()->currency ?? 'AED' }}</span> {{ number_format($monthReceivable, 2) }}</h4>
                         <p class="text-[10px] sm:text-xs text-gray-400 mt-2">Selected Month</p>
                     </div>
 
@@ -126,7 +126,7 @@
                                 <h4 class="text-xl sm:text-2xl font-black text-indigo-700">{{ number_format($stat['hours'], 1) }} <span class="text-xs font-normal text-indigo-400">Hours</span></h4>
                                 <div class="flex items-center gap-1.5 mt-1 border-t border-indigo-50 pt-2">
                                     <span class="text-[10px] text-gray-400 font-bold uppercase">Receivable:</span>
-                                    <span class="text-xs sm:text-sm font-bold text-gray-700"><span class="text-[10px] font-normal text-gray-400">AED</span> {{ number_format($stat['amount'], 2) }}</span>
+                                    <span class="text-xs sm:text-sm font-bold text-gray-700"><span class="text-[10px] font-normal text-gray-400">{{ \App\Models\Setting::first()->currency ?? 'AED' }}</span> {{ number_format($stat['amount'], 2) }}</span>
                                 </div>
                             </div>
                         </div>

@@ -43,7 +43,7 @@
 
                     <div class="mt-6 bg-red-50 p-4 rounded-lg border border-red-100">
                         <div class="text-sm text-red-500 font-semibold mb-1">Total Due Balance</div>
-                        <div class="text-2xl font-bold text-red-700">{{ number_format($dueAmount, 2) }} <span class="text-sm font-normal">AED</span></div>
+                        <div class="text-2xl font-bold text-red-700">{{ number_format($dueAmount, 2) }} <span class="text-sm font-normal">{{ \App\Models\Setting::first()->currency ?? 'AED' }}</span></div>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@
                     <form wire:submit="addPayment" class="p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Amount (AED) *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Amount ({{ \App\Models\Setting::first()->currency ?? 'AED' }}) *</label>
                                 <input type="number" step="0.01" wire:model="amount" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" required>
                                 @error('amount') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
@@ -223,7 +223,7 @@
                                 <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
                                     <th class="px-6 py-3 font-medium">Date</th>
                                     <th class="px-6 py-3 font-medium">Notes</th>
-                                    <th class="px-6 py-3 font-medium text-right">Amount (AED)</th>
+                                    <th class="px-6 py-3 font-medium text-right">Amount ({{ \App\Models\Setting::first()->currency ?? 'AED' }})</th>
                                     <th class="px-6 py-3 font-medium text-center">Slip</th>
                                 </tr>
                             </thead>

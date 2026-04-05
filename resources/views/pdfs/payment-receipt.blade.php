@@ -168,7 +168,7 @@
                 <tr>
                     <th style="width:30%;">Date</th>
                     <th style="width:50%;">Notes / Reference</th>
-                    <th class="right" style="width:20%;">Amount (AED)</th>
+                    <th class="right" style="width:20%;">Amount ({{ $setting->currency ?? 'AED' }})</th>
                 </tr>
             </thead>
             <tbody>
@@ -187,7 +187,7 @@
             <tfoot>
                 <tr>
                     <td colspan="2">TOTAL AMOUNT PAID</td>
-                    <td class="right">AED {{ number_format($totalPaid, 2) }}</td>
+                    <td class="right">{{ $setting->currency ?? 'AED' }} {{ number_format($totalPaid, 2) }}</td>
                 </tr>
             </tfoot>
         </table>
@@ -195,7 +195,7 @@
         {{-- Amount in words box --}}
         @if($totalPaid > 0)
         <div class="amount-words">
-            <strong>Amount: AED {{ number_format($totalPaid, 2) }}</strong>
+            <strong>Amount: {{ $setting->currency ?? 'AED' }} {{ number_format($totalPaid, 2) }}</strong>
             &nbsp;&nbsp;|&nbsp;&nbsp; Period: {{ $dateLabel }}
         </div>
         @endif

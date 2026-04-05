@@ -164,7 +164,7 @@
                 </div>
                 <div class="card">
                     <div class="num">{{ number_format($worker->internal_pay_rate, 2) }}</div>
-                    <div class="lbl">Rate / Hr (AED)</div>
+                    <div class="lbl">Rate / Hr ({{ $setting->currency ?? 'AED' }})</div>
                 </div>
             </div>
 
@@ -176,19 +176,19 @@
                 </tr>
                 <tr>
                     <td style="padding:4px 8px; border:1px solid #ddd;">Rate per Hour</td>
-                    <td style="padding:4px 8px; border:1px solid #ddd; text-align:right;">AED {{ number_format($worker->internal_pay_rate, 2) }}</td>
+                    <td style="padding:4px 8px; border:1px solid #ddd; text-align:right;">{{ $setting->currency ?? 'AED' }} {{ number_format($worker->internal_pay_rate, 2) }}</td>
                 </tr>
                 <tr style="background:#e8f0fb; font-weight:bold;">
                     <td style="padding:5px 8px; border:1px solid #c8d8ec;">GROSS SALARY</td>
-                    <td style="padding:5px 8px; border:1px solid #c8d8ec; text-align:right; font-size:12px;">AED {{ number_format($grossSalary, 2) }}</td>
+                    <td style="padding:5px 8px; border:1px solid #c8d8ec; text-align:right; font-size:12px;">{{ $setting->currency ?? 'AED' }} {{ number_format($grossSalary, 2) }}</td>
                 </tr>
                 <tr style="background:#e8f5e9; color:#2e7d32;">
                     <td style="padding:4px 8px; border:1px solid #c8e6c9;">Paid This Month</td>
-                    <td style="padding:4px 8px; border:1px solid #c8e6c9; text-align:right; font-weight:bold;">− AED {{ number_format($monthPaid, 2) }}</td>
+                    <td style="padding:4px 8px; border:1px solid #c8e6c9; text-align:right; font-weight:bold;">− {{ $setting->currency ?? 'AED' }} {{ number_format($monthPaid, 2) }}</td>
                 </tr>
                 <tr style="background:#fce8e8; color:#c62828; font-weight:bold;">
                     <td style="padding:5px 8px; border:1px solid #f5c6c6;">OUTSTANDING DUE (All Time)</td>
-                    <td style="padding:5px 8px; border:1px solid #f5c6c6; text-align:right; font-size:12px;">AED {{ number_format($overallDue, 2) }}</td>
+                    <td style="padding:5px 8px; border:1px solid #f5c6c6; text-align:right; font-size:12px;">{{ $setting->currency ?? 'AED' }} {{ number_format($overallDue, 2) }}</td>
                 </tr>
             </table>
 
@@ -206,7 +206,7 @@
                     <tr style="border-bottom:1px solid #eee;">
                         <td style="padding:3px 6px;">{{ \Carbon\Carbon::parse($pay->payment_date)->format('d M Y') }}</td>
                         <td style="padding:3px 6px; color:#555;">{{ $pay->notes ?? '—' }}</td>
-                        <td style="padding:3px 6px; text-align:right; color:#2e7d32; font-weight:bold;">AED {{ number_format($pay->amount, 2) }}</td>
+                        <td style="padding:3px 6px; text-align:right; color:#2e7d32; font-weight:bold;">{{ $setting->currency ?? 'AED' }} {{ number_format($pay->amount, 2) }}</td>
                     </tr>
                     @endforeach
                 </table>
@@ -218,15 +218,15 @@
             <div class="pay-box">
                 <div class="pay-label">Gross Salary</div>
                 <div class="pay-amount" style="font-size:18px;">{{ number_format($grossSalary, 2) }}</div>
-                <div class="pay-rate">AED &nbsp;|&nbsp; {{ $dateLabel }}</div>
+                <div class="pay-rate">{{ $setting->currency ?? 'AED' }} &nbsp;|&nbsp; {{ $dateLabel }}</div>
             </div>
             <div style="margin-top:6px; background:#e8f5e9; border:1px solid #c8e6c9; border-radius:4px; padding:8px; text-align:center;">
                 <div style="font-size:9px; color:#2e7d32; text-transform:uppercase; letter-spacing:.5px;">Paid This Month</div>
-                <div style="font-size:16px; font-weight:bold; color:#2e7d32; margin-top:2px;">AED {{ number_format($monthPaid, 2) }}</div>
+                <div style="font-size:16px; font-weight:bold; color:#2e7d32; margin-top:2px;">{{ $setting->currency ?? 'AED' }} {{ number_format($monthPaid, 2) }}</div>
             </div>
             <div style="margin-top:6px; background:#fce8e8; border:1px solid #f5c6c6; border-radius:4px; padding:8px; text-align:center;">
                 <div style="font-size:9px; color:#c62828; text-transform:uppercase; letter-spacing:.5px;">Outstanding Due</div>
-                <div style="font-size:18px; font-weight:bold; color:#c62828; margin-top:2px;">AED {{ number_format($overallDue, 2) }}</div>
+                <div style="font-size:18px; font-weight:bold; color:#c62828; margin-top:2px;">{{ $setting->currency ?? 'AED' }} {{ number_format($overallDue, 2) }}</div>
                 <div style="font-size:8px; color:#999; margin-top:2px;">All-time balance</div>
             </div>
         </div>
