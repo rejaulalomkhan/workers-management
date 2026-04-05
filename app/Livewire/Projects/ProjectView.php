@@ -156,10 +156,11 @@ class ProjectView extends Component
         $monthHours = 0;
         $monthReceivable = 0;
         
-        $masonHours = 0;
-        $masonAmount = 0;
-        $helperHours = 0;
-        $helperAmount = 0;
+        $categoryStats = [];
+        // Optional: Pre-fill with project's required categories so they always show
+        foreach($categories as $cat) {
+            $categoryStats[strtoupper(trim($cat->name))] = ['hours' => 0, 'amount' => 0];
+        }
         
         $currentMonthWorkers = [];
         $dateWiseWorkers = [];
@@ -185,14 +186,12 @@ class ProjectView extends Component
                 $monthHours += $att->hours;
                 $monthReceivable += ($att->hours * $rate);
 
-                $trade = strtoupper(trim($worker->trade ?? ''));
-                if ($trade === 'MASON') {
-                    $masonHours += $att->hours;
-                    $masonAmount += ($att->hours * $rate);
-                } elseif ($trade === 'HELPER') {
-                    $helperHours += $att->hours;
-                    $helperAmount += ($att->hours * $rate);
+                $trade = strtoupper(trim($worker->trade ?? 'UNCATEGORIZED'));
+                if (!isset($categoryStats[$trade])) {
+                    $categoryStats[$trade] = ['hours' => 0, 'amount' => 0];
                 }
+                $categoryStats[$trade]['hours'] += $att->hours;
+                $categoryStats[$trade]['amount'] += ($att->hours * $rate);
                 
                 if(!isset($currentMonthWorkers[$worker->id])) {
                     $currentMonthWorkers[$worker->id] = [
@@ -211,20 +210,18 @@ class ProjectView extends Component
                         'date_display' => $attDate->format('d-m-Y'),
                         'total_workers' => 0,
                         'total_hours' => 0,
-                        'mason_hours' => 0,
-                        'helper_hours' => 0,
+                        'category_hours' => [],
                         'workers' => []
                     ];
                 }
                 $dateWiseWorkers[$dateStr]['total_workers'] += 1;
                 $dateWiseWorkers[$dateStr]['total_hours'] += $att->hours;
 
-                $trade = strtoupper(trim($worker->trade ?? ''));
-                if ($trade === 'MASON') {
-                    $dateWiseWorkers[$dateStr]['mason_hours'] += $att->hours;
-                } elseif ($trade === 'HELPER') {
-                    $dateWiseWorkers[$dateStr]['helper_hours'] += $att->hours;
+                $trade = strtoupper(trim($worker->trade ?? 'UNCATEGORIZED'));
+                if (!isset($dateWiseWorkers[$dateStr]['category_hours'][$trade])) {
+                    $dateWiseWorkers[$dateStr]['category_hours'][$trade] = 0;
                 }
+                $dateWiseWorkers[$dateStr]['category_hours'][$trade] += $att->hours;
 
                 $dateWiseWorkers[$dateStr]['workers'][] = [
                     'worker' => $worker,
@@ -247,10 +244,7 @@ class ProjectView extends Component
             'totalReceivable' => $totalReceivable,
             'monthHours' => $monthHours,
             'monthReceivable' => $monthReceivable,
-            'masonHours' => $masonHours,
-            'masonAmount' => $masonAmount,
-            'helperHours' => $helperHours,
-            'helperAmount' => $helperAmount,
+            'categoryStats' => $categoryStats,
             'currentMonthWorkers' => $currentMonthWorkers,
             'dateWiseWorkers' => $dateWiseWorkers,
             'allWorkers' => collect($uniqueWorkers)->values(),

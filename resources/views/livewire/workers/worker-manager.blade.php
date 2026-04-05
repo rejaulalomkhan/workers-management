@@ -118,19 +118,15 @@
                                     @error('worker_id_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Trade / Category *</label>
-                                    <input type="text"
-                                           wire:model="trade"
-                                           list="trade-suggestions"
-                                           autocomplete="off"
-                                           placeholder="e.g. HELPER, MASON..."
-                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                                    <datalist id="trade-suggestions">
-                                        @foreach($tradeSuggestions as $t)
-                                            <option value="{{ $t }}">
+                                    <label class="block text-sm font-medium text-gray-700">Category *</label>
+                                    <select wire:model="worker_category_id"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white">
+                                        <option value="">-- Select Category --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
-                                    </datalist>
-                                    @error('trade') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </select>
+                                    @error('worker_category_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Internal Pay Rate (per hour) *</label>

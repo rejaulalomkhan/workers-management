@@ -10,6 +10,7 @@ use App\Livewire\Reports\MonthlyAttendance;
 use App\Livewire\Reports\ProfitLoss;
 use App\Livewire\Salary\SalaryReport;
 use App\Livewire\Settings\SettingsManager;
+use App\Livewire\Workers\WorkerCategoryManager;
 use App\Livewire\Workers\WorkerManager;
 use App\Livewire\Workers\WorkerView;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects',           ProjectManager::class);
     Route::get('/projects/{project}', ProjectView::class)->name('projects.view');
     Route::get('/workers',            WorkerManager::class);
+    Route::get('/worker-categories',  WorkerCategoryManager::class);
     Route::get('/workers/{worker}',   WorkerView::class)->name('workers.view');
     Route::get('/attendance',         AttendanceManager::class);
     Route::get('/salary',             SalaryReport::class);

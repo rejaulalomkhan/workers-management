@@ -5,6 +5,7 @@ namespace App\Livewire\Workers;
 use Livewire\Component;
 use App\Models\Worker;
 use App\Models\WorkerRate;
+use App\Models\WorkerCategory;
 use Carbon\Carbon;
 use Livewire\WithPagination;
 
@@ -15,7 +16,7 @@ class WorkerManager extends Component
     public $search = '';
     public $tradeFilter = '';
     public $isModalOpen = false;
-    public $worker_id, $name, $worker_id_number, $trade, $internal_pay_rate;
+    public $worker_id, $name, $worker_id_number, $worker_category_id, $internal_pay_rate;
 
     public function updatingSearch()
     {
@@ -64,16 +65,14 @@ class WorkerManager extends Component
 
         $totalWorkers = Worker::count();
 
-        // Distinct trades for datalist suggestions
-        $tradeSuggestions = $tradeStats->pluck('trade')
-            ->merge(['HELPER', 'MASON'])
-            ->unique()->sort()->values();
+        // Categories for dropdown
+        $categories = WorkerCategory::where('status', true)->orderBy('name')->get();
 
         return view('livewire.workers.worker-manager', [
-            'workers'          => $workers,
-            'tradeSuggestions' => $tradeSuggestions,
-            'tradeStats'       => $tradeStats,
-            'totalWorkers'     => $totalWorkers,
+            'workers'      => $workers,
+            'categories'   => $categories,
+            'tradeStats'   => $tradeStats,
+            'totalWorkers' => $totalWorkers,
         ]);
     }
 
@@ -98,7 +97,7 @@ class WorkerManager extends Component
         $this->worker_id = '';
         $this->name = '';
         $this->worker_id_number = '';
-        $this->trade = '';
+        $this->worker_category_id = '';
         $this->internal_pay_rate = '';
     }
 
@@ -109,7 +108,7 @@ class WorkerManager extends Component
 
         $this->validate([
             'name'               => 'required',
-            'trade'              => 'required',
+            'worker_category_id' => 'required',
             'internal_pay_rate'  => 'required|numeric',
             'worker_id_number'   => [
                 'nullable',
@@ -118,6 +117,9 @@ class WorkerManager extends Component
                     : '',
             ],
         ]);
+
+        $category = WorkerCategory::find($this->worker_category_id);
+        $tradeName = $category ? $category->name : 'Uncategorized';
 
         $worker = Worker::find($this->worker_id);
 
@@ -132,14 +134,16 @@ class WorkerManager extends Component
             $worker->update([
                 'name'               => $this->name,
                 'worker_id_number'   => $this->worker_id_number ?: null,
-                'trade'              => $this->trade,
+                'worker_category_id' => $this->worker_category_id,
+                'trade'              => $tradeName,
                 'internal_pay_rate'  => $this->internal_pay_rate,
             ]);
         } else {
             $worker = Worker::create([
                 'name'               => $this->name,
                 'worker_id_number'   => $this->worker_id_number ?: null,
-                'trade'              => $this->trade,
+                'worker_category_id' => $this->worker_category_id,
+                'trade'              => $tradeName,
                 'internal_pay_rate'  => $this->internal_pay_rate,
             ]);
             WorkerRate::create([
@@ -160,7 +164,15 @@ class WorkerManager extends Component
         $this->worker_id = $id;
         $this->name = $worker->name;
         $this->worker_id_number = $worker->worker_id_number;
-        $this->trade = $worker->trade;
+        
+        // If worker doesn't have an ID (legacy), try to match it by trade name
+        if (!$worker->worker_category_id && $worker->trade) {
+            $cat = WorkerCategory::where('name', $worker->trade)->first();
+            $this->worker_category_id = $cat ? $cat->id : '';
+        } else {
+            $this->worker_category_id = $worker->worker_category_id;
+        }
+
         $this->internal_pay_rate = $worker->internal_pay_rate;
         $this->openModal();
     }

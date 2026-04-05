@@ -35,4 +35,9 @@ class Worker extends Model
     {
         return $this->belongsToMany(Project::class);
     }
+    
+    public function category()
+    {
+        return $this->belongsTo(WorkerCategory::class, 'worker_category_id');
+    }
 }
